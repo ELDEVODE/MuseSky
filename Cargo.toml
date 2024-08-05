@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/atlist_test_backend"
+]
+resolver = "2"

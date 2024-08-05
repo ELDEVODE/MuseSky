@@ -1,0 +1,27 @@
+{
+  "canisters": {
+    "atlist_test_backend": {
+      "candid": "src/atlist_test_backend/atlist_test_backend.did",
+      "package": "atlist_test_backend",
+      "type": "rust"
+    },
+    "atlist_test_frontend": {
+      "dependencies": [
+        "atlist_test_backend"
+      ],
+      "source": [
+        "src/atlist_test_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "atlist_test_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
