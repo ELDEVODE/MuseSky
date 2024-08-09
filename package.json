@@ -9,7 +9,8 @@
     "prebuild": "npm run prebuild --workspaces --if-present",
     "pretest": "npm run prebuild --workspaces --if-present",
     "start": "npm start --workspaces --if-present",
-    "test": "npm test --workspaces --if-present"
+    "test": "npm test --workspaces --if-present",
+    "deploy": "RUSTFLAGS=\"$RUSTFLAGS -A dead_code\" cargo build --release --target wasm32-unknown-unknown --package atlist_test_backend && candid-extractor target/wasm32-unknown-unknown/release/atlist_test_backend.wasm > src/atlist_test_backend/atlist_test_backend.did"
   },
   "type": "module",
   "workspaces": [

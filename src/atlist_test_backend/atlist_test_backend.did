@@ -1,3 +1,99 @@
-service : {
-    "greet": (text) -> (text) query;
+type BTCPrice = record { usd : float64; timestamp : nat64 };
+type Collection = record {
+  id : nat;
+  owner : principal;
+  name : text;
+  description : text;
+  social_media_links : opt SocialMediaLinks;
+  supply : nat;
+  image : blob;
+};
+type Condition = variant { Sunny; Cloudy; Windy; Raining };
+type DashboardData = record {
+  active_auctions : vec NFT;
+  total_collections : nat;
+  total_nfts : nat;
+  nfts_for_sale : vec NFT;
+};
+type NFT = record {
+  id : nat;
+  creator : principal;
+  weather_condition : text;
+  owner : principal;
+  name : text;
+  collection_id : nat;
+  highest_bidder : opt principal;
+  for_sale : bool;
+  created_at : nat;
+  sale_price : opt nat;
+  auction_end_time : opt nat64;
+  rarity : Rarity;
+  image : blob;
+  highest_bid : opt nat;
+  price : nat;
+  location : text;
+};
+type Rarity = variant { Epic; Rare; Uncommon; Legendary; Common };
+type RarityThresholds = record {
+  epic : nat8;
+  rare : nat8;
+  common : nat8;
+  uncommon : nat8;
+};
+type Result = variant { Ok; Err : text };
+type Result_1 = variant { Ok : nat; Err : text };
+type SocialMediaLinks = record {
+  x : opt text;
+  instagram : opt text;
+  website : opt text;
+  discord : opt text;
+  telegram : opt text;
+};
+type UserProfile = record {
+  "principal" : principal;
+  is_new_user : bool;
+  nfts : vec NFT;
+  collections : vec Collection;
+  wallet : Wallet;
+};
+type Wallet = record { balance : nat; owner : principal };
+type WeatherData = record {
+  temperature : float64;
+  timestamp : nat;
+  location : text;
+  condition : Condition;
+};
+service : () -> {
+  buy_nft : (nat) -> (Result);
+  create_collection : (
+      text,
+      blob,
+      text,
+      opt text,
+      opt text,
+      opt text,
+      opt text,
+      opt text,
+    ) -> (nat);
+  end_auction : (nat) -> (Result);
+  get_active_auctions : () -> (vec NFT) query;
+  get_all_collections : () -> (vec Collection) query;
+  get_btc_price : () -> (BTCPrice) query;
+  get_collection_details : (nat) -> (opt Collection) query;
+  get_collections_by_owner : (principal) -> (vec Collection) query;
+  get_dashboard_data : () -> (DashboardData) query;
+  get_nft : (nat) -> (opt NFT) query;
+  get_nfts_by_owner : (principal) -> (vec NFT) query;
+  get_nfts_for_sale : () -> (vec NFT) query;
+  get_nfts_in_collection : (nat) -> (vec NFT) query;
+  get_user_profile : (principal) -> (UserProfile) query;
+  get_wallet_balance : (principal) -> (nat) query;
+  get_weather : (text) -> (WeatherData) query;
+  list_nft_for_sale : (nat, nat) -> (Result);
+  mintNFT : (nat, text, nat, blob, blob, blob, blob, text) -> (Result_1);
+  place_bid : (nat, nat) -> (Result);
+  start_auction : (nat, nat, nat64) -> (Result);
+  transfer : (principal, nat) -> (Result);
+  update_balance : (principal, nat) -> (Result_1);
+  update_rarity_thresholds : (RarityThresholds) -> (Result);
 }
