@@ -5,6 +5,11 @@
       "package": "atlist_test_backend",
       "type": "rust"
     },
+    "atlist_test_blog": {
+      "candid": "src/atlist_test_blog/atlist_test_blog.did",
+      "package": "atlist_test_blog",
+      "type": "rust"
+    },
     "atlist_test_frontend": {
       "dependencies": ["atlist_test_backend"],
       "source": ["src/atlist_test_frontend/dist"],

@@ -1,0 +1,11 @@
+type Post = record { id : text; title : text; content : text; author : text };
+type Result = variant { Ok : text; Err : text };
+type Result_1 = variant { Ok; Err : text };
+service : {
+  create_post : (text, text, text, text, text) -> (Result);
+  delete_post : (text, text, text) -> (Result_1);
+  get_all_posts : () -> (vec Post) query;
+  get_post : (text) -> (opt Post) query;
+  list_posts : () -> (vec Post) query;
+  update_post : (text, text, text, text, text, text) -> (Result_1);
+}

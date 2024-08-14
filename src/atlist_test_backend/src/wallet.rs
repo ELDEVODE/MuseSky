@@ -3,10 +3,24 @@ use candid::{Nat, Principal};
 use std::cell::RefCell;
 use std::collections::HashMap;
 
-#[derive(CandidType, Deserialize, Clone)]
+#[derive(CandidType, Deserialize, Clone, Debug, Eq, Hash, PartialEq)]
+pub enum Currency {
+    BTC,
+    ETH,
+    SOL,
+    ICP,
+}
+
+#[derive(CandidType, Deserialize, Clone, Debug)]
+pub struct Balance {
+    pub amount: Nat,
+    pub currency: Currency,
+}
+
+#[derive(CandidType, Deserialize, Clone, Debug, PartialEq)]
 pub struct Wallet {
     pub owner: Principal,
-    pub balance: Nat, // Balance in satoshis
+    pub balances: HashMap<Currency, Nat>,
 }
 
 thread_local! {
@@ -18,47 +32,56 @@ pub fn init() {
 }
 
 pub fn create_wallet(owner: Principal) -> Wallet {
-    let wallet = Wallet {
-        owner,
-        balance: Nat::from(100000_u32), // Starting balance of 0.001 BTC (100,000 satoshis)
-    };
+    let mut balances = HashMap::new();
+    balances.insert(Currency::BTC, Nat::from(100000_u32)); // 0.001 BTC
+    balances.insert(Currency::ETH, Nat::from(1000000000000000000_u64)); // 1 ETH
+    balances.insert(Currency::SOL, Nat::from(1000000000_u32)); // 1 SOL
+    balances.insert(Currency::ICP, Nat::from(100000000_u32)); // 1 ICP
+
+    let wallet = Wallet { owner, balances };
     WALLETS.with(|wallets| {
         wallets.borrow_mut().insert(owner, wallet.clone());
     });
     wallet
 }
 
-pub fn get_balance(owner: Principal) -> Nat {
+pub fn get_balance(owner: Principal, currency: Currency) -> Nat {
     WALLETS.with(|wallets| {
         wallets
             .borrow()
             .get(&owner)
-            .map(|w| w.balance.clone())
+            .and_then(|w| w.balances.get(&currency).cloned())
             .unwrap_or(Nat::from(0_u32))
     })
 }
 
-pub fn update_balance(owner: Principal, amount: Nat) -> Result<Nat, String> {
+pub fn update_balance(owner: Principal, amount: Nat, currency: Currency) -> Result<Nat, String> {
     WALLETS.with(|wallets| {
         let mut wallets = wallets.borrow_mut();
         if let Some(wallet) = wallets.get_mut(&owner) {
-            wallet.balance += amount;
-            Ok(wallet.balance.clone())
+            let balance = wallet.balances.entry(currency).or_insert(Nat::from(0_u32));
+            *balance += amount;
+            Ok(balance.clone())
         } else {
             Err("Wallet not found".to_string())
         }
     })
 }
 
-pub fn update_balance_subtract(owner: Principal, amount: Nat) -> Result<Nat, String> {
+pub fn update_balance_subtract(
+    owner: Principal,
+    amount: Nat,
+    currency: Currency,
+) -> Result<Nat, String> {
     WALLETS.with(|wallets| {
         let mut wallets = wallets.borrow_mut();
         if let Some(wallet) = wallets.get_mut(&owner) {
-            if wallet.balance < amount {
+            let balance = wallet.balances.entry(currency).or_insert(Nat::from(0_u32));
+            if *balance < amount {
                 Err("Insufficient balance".to_string())
             } else {
-                wallet.balance -= amount;
-                Ok(wallet.balance.clone())
+                *balance -= amount;
+                Ok(balance.clone())
             }
         } else {
             Err("Wallet not found".to_string())
@@ -80,36 +103,66 @@ pub fn get_wallet(owner: Principal) -> Wallet {
     })
 }
 
-pub fn transfer(from: Principal, to: Principal, amount: Nat) -> Result<(), String> {
+pub fn transfer(
+    from: Principal,
+    to: Principal,
+    amount: Nat,
+    currency: Currency,
+) -> Result<(), String> {
     if from == to {
         return Err("Cannot transfer to self".to_string());
     }
 
-    update_balance_subtract(from, amount.clone())?;
-    update_balance(to, amount)?;
+    update_balance_subtract(from, amount.clone(), currency.clone())?;
+    update_balance(to, amount, currency)?;
 
     Ok(())
 }
 
-// Helper function to convert satoshis to BTC for display purposes
-pub fn satoshi_to_btc(satoshis: &Nat) -> Nat {
-    (satoshis.0.clone() / 100_000_000_u64).into()
+// Helper functions for currency conversions (simplified for example purposes)
+pub fn to_smallest_unit(amount: Nat, currency: Currency) -> Nat {
+    match currency {
+        Currency::BTC => amount * Nat::from(100000000_u64), // Satoshis
+        Currency::ETH => amount * Nat::from(1000000000000000000_u64), // Wei
+        Currency::SOL => amount * Nat::from(1000000000_u64), // Lamports
+        Currency::ICP => amount * Nat::from(100000000_u64), // E8s
+    }
 }
 
-// Helper function to convert BTC to satoshis for internal calculations
-pub fn btc_to_satoshi(btc: Nat) -> Nat {
-    (btc * 100_000_000_u64).into()
+pub fn from_smallest_unit(amount: Nat, currency: Currency) -> Nat {
+    match currency {
+        Currency::BTC => amount / Nat::from(100000000_u64),
+        Currency::ETH => amount / Nat::from(1000000000000000000_u64),
+        Currency::SOL => amount / Nat::from(1000000000_u64),
+        Currency::ICP => amount / Nat::from(100000000_u64),
+    }
 }
 
-// pub fn get_total_supply() -> Nat {
-//     WALLETS.with(|wallets| {
-//         wallets
-//             .borrow()
-//             .values()
-//             .fold(Nat::from(0_u32), |acc, wallet| acc + wallet.balance.clone())
-//     })
-// }
+pub fn get_all_balances(owner: Principal) -> HashMap<Currency, Nat> {
+    WALLETS.with(|wallets| {
+        wallets
+            .borrow()
+            .get(&owner)
+            .map(|w| w.balances.clone())
+            .unwrap_or_else(HashMap::new)
+    })
+}
 
-// pub fn get_all_wallets() -> Vec<Wallet> {
-//     WALLETS.with(|wallets| wallets.borrow().values().cloned().collect())
-// }
+pub fn get_total_supply(currency: Currency) -> Nat {
+    WALLETS.with(|wallets| {
+        wallets
+            .borrow()
+            .values()
+            .fold(Nat::from(0_u32), |acc, wallet| {
+                acc + wallet
+                    .balances
+                    .get(&currency)
+                    .cloned()
+                    .unwrap_or(Nat::from(0_u32))
+            })
+    })
+}
+
+pub fn get_all_wallets() -> Vec<Wallet> {
+    WALLETS.with(|wallets| wallets.borrow().values().cloned().collect())
+}

@@ -1,6 +1,7 @@
 use candid::{CandidType, Deserialize, Nat, Principal};
 use collection::Collection;
 use ic_cdk_macros::*;
+use wallet::Currency;
 
 mod btc_price;
 mod collection;
@@ -15,13 +16,15 @@ fn init() {
     collection::init();
     wallet::init();
     nft::start_weather_update_timer();
+    nft::init_pricing_factors();
 }
 
-#[update(name = "mintNFT")]
+#[update]
 async fn mint_nft(
     collection_id: Nat,
     name: String,
     price: Nat,
+    currency: Currency,
     sunny_image: Vec<u8>,
     raining_image: Vec<u8>,
     windy_image: Vec<u8>,
@@ -32,6 +35,7 @@ async fn mint_nft(
         collection_id,
         name,
         price,
+        currency,
         location,
         sunny_image,
         raining_image,
@@ -80,8 +84,8 @@ fn get_all_collections() -> Vec<collection::Collection> {
 }
 
 #[update]
-fn update_balance(owner: Principal, amount: Nat) -> Result<Nat, String> {
-    wallet::update_balance(owner, amount)
+fn update_balance(owner: Principal, amount: Nat, currency: Currency) -> Result<Nat, String> {
+    wallet::update_balance(owner, amount, currency)
 }
 
 #[query]
@@ -153,8 +157,8 @@ fn list_nft_for_sale(id: Nat, price: Nat) -> Result<(), String> {
 }
 
 #[update]
-fn buy_nft(id: Nat) -> Result<(), String> {
-    nft::buy_nft(id)
+fn buy_nft(id: Nat, currency: Currency) -> Result<(), String> {
+    nft::buy_nft(id, currency)
 }
 
 #[update]
@@ -163,10 +167,9 @@ fn start_auction(id: Nat, starting_price: Nat, duration: u64) -> Result<(), Stri
 }
 
 #[update]
-fn place_bid(id: Nat, bid_amount: Nat) -> Result<(), String> {
-    nft::place_bid(id, bid_amount)
+fn place_bid(id: Nat, bid_amount: Nat, currency: Currency) -> Result<(), String> {
+    nft::place_bid(id, bid_amount, currency)
 }
-
 #[update]
 fn end_auction(id: Nat) -> Result<(), String> {
     nft::end_auction(id)
@@ -193,14 +196,14 @@ fn get_nfts_for_sale() -> Vec<nft::NFT> {
 }
 
 #[query]
-fn get_wallet_balance(owner: Principal) -> Nat {
-    wallet::get_balance(owner)
+fn get_wallet_balance(owner: Principal, currency: Currency) -> Nat {
+    wallet::get_balance(owner, currency)
 }
 
 #[update]
-fn transfer(address: Principal, amount: Nat) -> Result<(), String> {
+fn transfer(to: Principal, amount: Nat, currency: Currency) -> Result<(), String> {
     let from = ic_cdk::api::caller();
-    wallet::transfer(from, address, amount)
+    wallet::transfer(from, to, amount, currency)
 }
 
 #[query]

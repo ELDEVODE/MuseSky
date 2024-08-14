@@ -1,11 +1,11 @@
-use crate::wallet::{self, btc_to_satoshi};
+use crate::wallet::{self, Balance, Currency};
 use crate::weather::{self, Condition};
 use candid::Principal as ICPrincipal;
 use candid::{CandidType, Deserialize, Nat, Principal};
 use ic_cdk::api::call::call_raw;
 use ic_cdk::api::time;
 use ic_cdk_timers::set_timer_interval;
-use std::cell::RefCell;
+use std::cell::{Ref, RefCell};
 use std::collections::{HashMap, VecDeque};
 use std::time::Duration;
 
@@ -19,12 +19,18 @@ pub enum Rarity {
 }
 
 #[derive(CandidType, Deserialize, Clone)]
+pub struct NFTPrice {
+    pub amount: Nat,
+    pub currency: Currency,
+}
+
+#[derive(CandidType, Deserialize, Clone)]
 pub struct NFT {
     pub id: Nat,
     pub collection_id: Nat,
     pub name: String,
     pub image: Vec<u8>,
-    pub price: Nat,
+    pub price: NFTPrice,
     pub location: String,
     pub owner: Principal,
     pub creator: Principal,
@@ -32,12 +38,12 @@ pub struct NFT {
     pub created_at: Nat,
     pub rarity: Rarity,
     pub for_sale: bool,
-    pub sale_price: Option<Nat>,
+    pub sale_price: Option<NFTPrice>,
     pub auction_end_time: Option<u64>,
     pub highest_bidder: Option<Principal>,
-    pub highest_bid: Option<Nat>,
+    pub highest_bid: Option<NFTPrice>,
     pub all_images: Vec<Vec<u8>>,
-    pub initial_price: Nat,
+    pub initial_price: NFTPrice,
     pub last_price_update: u64,
     pub auction_extension_period: Option<u64>,
 }
@@ -78,31 +84,7 @@ pub fn init() {
     NFT_STORAGE.with(|storage| storage.borrow_mut().clear());
     NEXT_ID.with(|id| *id.borrow_mut() = Nat::from(1_u32));
     WEATHER_IMAGES.with(|images| images.borrow_mut().clear());
-}
-
-pub fn update_single_nft_price(nft: &mut NFT) {
-    let current_time = time();
-    let cooldown_period = 3600 * 1_000_000_000; // 1 hour in nanoseconds
-
-    if current_time - nft.last_price_update < cooldown_period {
-        return; // Exit if cooldown period hasn't passed
-    }
-
-    let old_price = nft.price.clone();
-    let new_price = calculate_nft_price(nft);
-
-    if new_price != old_price {
-        let reason = format!(
-            "Price updated for NFT ID {}. Old price: {}. New price: {}. Reason: {}.",
-            nft.id,
-            old_price,
-            new_price,
-            get_price_change_reason(nft, &old_price, &new_price)
-        );
-        ic_cdk::println!("{}", reason);
-        nft.price = new_price;
-        nft.last_price_update = current_time;
-    }
+    init_pricing_factors();
 }
 
 pub fn init_pricing_factors() {
@@ -126,13 +108,64 @@ pub fn init_pricing_factors() {
     });
 }
 
-fn calculate_nft_price(nft: &NFT) -> Nat {
+pub fn update_single_nft_price(nft: &mut NFT) {
+    let current_time = time();
+    let cooldown_period = 3600 * 1_000_000_000; // 1 hour in nanoseconds
+
+    if current_time - nft.last_price_update < cooldown_period {
+        return; // Exit if cooldown period hasn't passed
+    }
+
+    let old_price = nft.price.clone();
+    let new_price = calculate_nft_price(nft);
+
+    if new_price.amount != old_price.amount {
+        let reason = format!(
+            "Price updated for NFT ID {}. Old price: {} {:?}. New price: {} {:?}. Reason: {}.",
+            nft.id,
+            old_price.amount,
+            old_price.currency,
+            new_price.amount,
+            new_price.currency,
+            get_price_change_reason(nft, &old_price, &new_price)
+        );
+        ic_cdk::println!("{}", reason);
+        nft.price = new_price;
+        nft.last_price_update = current_time;
+    }
+}
+
+// pub fn init_pricing_factors() {
+//     PRICING_FACTORS.with(|factors| {
+//         let mut factors = factors.borrow_mut();
+//         factors
+//             .base_prices
+//             .insert(Rarity::Common, Nat::from(1_000_000u64));
+//         factors
+//             .base_prices
+//             .insert(Rarity::Uncommon, Nat::from(5_000_000u64));
+//         factors
+//             .base_prices
+//             .insert(Rarity::Rare, Nat::from(10_000_000u64));
+//         factors
+//             .base_prices
+//             .insert(Rarity::Epic, Nat::from(50_000_000u64));
+//         factors
+//             .base_prices
+//             .insert(Rarity::Legendary, Nat::from(100_000_000u64));
+//     });
+// }
+
+fn calculate_nft_price(nft: &NFT) -> NFTPrice {
     PRICING_FACTORS.with(|factors| {
         let factors = factors.borrow();
         let binding = Nat::from(1_000_000u64);
         let base_price = factors.base_prices.get(&nft.rarity).unwrap_or(&binding);
-        let price = (Nat::from(base_price.0.clone()) * factors.demand_multiplier.clone());
-        Nat::from(price)
+        let price = Nat::from(base_price.0.clone()) * factors.demand_multiplier.clone();
+        NFTPrice {
+            amount: Nat::from(price),
+            currency: nft.price.currency.clone(),
+        }
     })
 }
 
@@ -230,6 +263,7 @@ pub async fn mint_nft(
     collection_id: Nat,
     name: String,
     initial_price: Nat,
+    currency: Currency,
     location: String,
     sunny_image: Vec<u8>,
     raining_image: Vec<u8>,
@@ -237,11 +271,7 @@ pub async fn mint_nft(
     windy_image: Vec<u8>,
 ) -> Result<Nat, String> {
     let caller = ic_cdk::caller();
-    let id = NEXT_ID.with(|id| {
-        let current_id = id.borrow().clone();
-        *id.borrow_mut() += Nat::from(1_u32);
-        current_id
-    });
+    let id = get_next_id();
 
     WEATHER_IMAGES.with(|images| {
         let mut images = images.borrow_mut();
@@ -266,13 +296,18 @@ pub async fn mint_nft(
 
     let all_images = WEATHER_IMAGES.with(|images| images.borrow().values().cloned().collect());
 
+    let nft_price = NFTPrice {
+        amount: initial_price.clone(),
+        currency: currency.clone(),
+    };
+
     let nft = NFT {
         id: id.clone(),
         collection_id,
         name,
         image,
-        price: initial_price.clone(),
-        initial_price: initial_price.clone(),
+        price: nft_price.clone(),
+        initial_price: nft_price.clone(),
         location,
         owner: caller,
         creator: caller,
@@ -292,11 +327,11 @@ pub async fn mint_nft(
     NFT_STORAGE.with(|storage| storage.borrow_mut().insert(id.clone(), nft.clone()));
 
     // Subtract the price from the wallet
-    if wallet::get_balance(caller) < initial_price.clone() {
+    let caller_balance = wallet::get_balance(caller, currency.clone());
+    if caller_balance < initial_price {
         return Err("Insufficient balance".to_string());
     }
-    let price_to_subtract = wallet::btc_to_satoshi(initial_price.clone());
-    wallet::update_balance_subtract(caller, btc_to_satoshi(price_to_subtract))?;
+    wallet::update_balance_subtract(caller, initial_price, currency)?;
 
     Ok(id)
 }
@@ -364,7 +399,10 @@ pub fn list_for_sale(id: Nat, price: Nat) -> Result<(), String> {
                 return Err("Only the owner can list the NFT for sale".to_string());
             }
             nft.for_sale = true;
-            nft.sale_price = Some(price);
+            nft.sale_price = Some(NFTPrice {
+                amount: price,
+                currency: nft.price.currency.clone(),
+            });
             Ok(())
         } else {
             Err("NFT not found".to_string())
@@ -372,7 +410,7 @@ pub fn list_for_sale(id: Nat, price: Nat) -> Result<(), String> {
     })
 }
 
-pub fn buy_nft(id: Nat) -> Result<(), String> {
+pub fn buy_nft(id: Nat, currency: Currency) -> Result<(), String> {
     update_demand_if_needed();
     let buyer = ic_cdk::caller();
     NFT_STORAGE.with(|storage| {
@@ -382,20 +420,31 @@ pub fn buy_nft(id: Nat) -> Result<(), String> {
             if !nft.for_sale {
                 return Err("NFT is not for sale".to_string());
             }
-            let price = nft.sale_price.clone().ok_or("Sale price not set")?;
-            if wallet::get_balance(buyer) < price {
+            let sale_price = nft.sale_price.clone().ok_or("Sale price not set")?;
+
+            if currency != sale_price.currency {
+                return Err(format!(
+                    "NFT is priced in {:?}, but you're trying to pay with {:?}",
+                    sale_price.currency, currency
+                ));
+            }
+
+            let buyer_balance = wallet::get_balance(buyer, currency.clone());
+            if buyer_balance < sale_price.amount {
                 return Err("Insufficient balance".to_string());
             }
 
             // Transfer funds
-            wallet::update_balance_subtract(buyer, wallet::btc_to_satoshi(price.clone()))?;
+            wallet::update_balance_subtract(buyer, sale_price.amount.clone(), currency.clone())?;
             wallet::update_balance(
                 nft.owner,
-                wallet::btc_to_satoshi(price.clone() * Nat::from(95_u32) / Nat::from(100_u32)),
+                sale_price.amount.clone() * Nat::from(95_u32) / Nat::from(100_u32),
+                currency.clone(),
             )?; // 95% to seller
             wallet::update_balance(
                 nft.creator,
-                wallet::btc_to_satoshi(price * Nat::from(5_u32) / Nat::from(100_u32)),
+                sale_price.amount * Nat::from(5_u32) / Nat::from(100_u32),
+                currency,
             )?; // 5% royalty to creator
 
             // Update NFT ownership
@@ -416,12 +465,14 @@ pub fn update_nft_prices() {
             let old_price = nft.price.clone();
             let new_price = calculate_nft_price(nft);
 
-            if new_price != old_price {
+            if new_price.amount != old_price.amount {
                 let reason = format!(
-                    "Price updated for NFT ID {}. Old price: {}. New price: {}. Reason: {}.",
+                    "Price updated for NFT ID {}. Old price: {} {:?}. New price: {} {:?}. Reason: {}.",
                     nft.id,
-                    old_price,
-                    new_price,
+                    old_price.amount,
+                    old_price.currency,
+                    new_price.amount,
+                    new_price.currency,
                     get_price_change_reason(nft, &old_price, &new_price)
                 );
                 ic_cdk::println!("{}", reason); // Log the reason for price change
@@ -432,7 +483,7 @@ pub fn update_nft_prices() {
     });
 }
 
-fn get_price_change_reason(nft: &NFT, old_price: &Nat, new_price: &Nat) -> String {
+fn get_price_change_reason(nft: &NFT, old_price: &NFTPrice, new_price: &NFTPrice) -> String {
     let demand_multiplier = get_current_demand_multiplier();
 
     let base_price = PRICING_FACTORS.with(|factors| {
@@ -444,15 +495,15 @@ fn get_price_change_reason(nft: &NFT, old_price: &Nat, new_price: &Nat) -> Strin
             .clone()
     });
 
-    if *old_price < *new_price {
+    if old_price.amount < new_price.amount {
         format!(
-            "Increased demand. Base price for rarity {:?} is {}. Current demand multiplier: {}.",
-            nft.rarity, base_price, demand_multiplier
+            "Increased demand. Base price for rarity {:?} is {} {:?}. Current demand multiplier: {}.",
+            nft.rarity, base_price, old_price.currency, demand_multiplier
         )
-    } else if *old_price > *new_price {
+    } else if old_price.amount > new_price.amount {
         format!(
-            "Decreased demand. Base price for rarity {:?} is {}. Current demand multiplier: {}.",
-            nft.rarity, base_price, demand_multiplier
+            "Decreased demand. Base price for rarity {:?} is {} {:?}. Current demand multiplier: {}.",
+            nft.rarity, base_price, old_price.currency, demand_multiplier
         )
     } else {
         "No change in price detected.".to_string()
@@ -466,13 +517,19 @@ pub fn start_price_update_timer() {
     });
 }
 
-pub fn place_bid(id: Nat, bid_amount: Nat) -> Result<(), String> {
+pub fn place_bid(id: Nat, bid_amount: Nat, currency: Currency) -> Result<(), String> {
     let bidder = ic_cdk::caller();
     NFT_STORAGE.with(|storage| {
         let mut storage = storage.borrow_mut();
         if let Some(nft) = storage.get_mut(&id) {
             if !nft.for_sale || nft.auction_end_time.is_none() {
                 return Err("NFT is not up for auction".to_string());
+            }
+            if currency != nft.price.currency {
+                return Err(format!(
+                    "NFT is priced in {:?}, but you're trying to bid with {:?}",
+                    nft.price.currency, currency
+                ));
             }
             let current_time = ic_cdk::api::time();
             let auction_end_time = nft.auction_end_time.unwrap();
@@ -492,32 +549,37 @@ pub fn place_bid(id: Nat, bid_amount: Nat) -> Result<(), String> {
                 <= nft
                     .highest_bid
                     .clone()
-                    .unwrap_or(nft.sale_price.clone().unwrap())
+                    .map(|b| b.amount)
+                    .unwrap_or(nft.sale_price.clone().unwrap().amount)
             {
                 return Err("Bid too low".to_string());
             }
-            if wallet::get_balance(bidder) < bid_amount {
+
+            let bidder_balance = wallet::get_balance(bidder, currency.clone());
+            if bidder_balance < bid_amount {
                 return Err("Insufficient balance".to_string());
             }
 
             // Return funds to previous highest bidder
             if let Some(prev_bidder) = nft.highest_bidder {
-                wallet::update_balance(
-                    prev_bidder,
-                    wallet::btc_to_satoshi(nft.highest_bid.clone().unwrap()),
-                )?;
+                let prev_bid = nft.highest_bid.clone().unwrap();
+                wallet::update_balance(prev_bidder, prev_bid.amount, prev_bid.currency)?;
             }
 
             // Update bid
-            wallet::update_balance_subtract(bidder, wallet::btc_to_satoshi(bid_amount.clone()))?;
+            wallet::update_balance_subtract(bidder, bid_amount.clone(), currency.clone())?;
             nft.highest_bidder = Some(bidder);
-            nft.highest_bid = Some(bid_amount);
+            nft.highest_bid = Some(NFTPrice {
+                amount: bid_amount,
+                currency,
+            });
             Ok(())
         } else {
             Err("NFT not found".to_string())
         }
     })
 }
+
 pub fn start_auction(id: Nat, starting_price: Nat, duration: u64) -> Result<(), String> {
     update_demand_if_needed();
     NFT_STORAGE.with(|storage| {
@@ -528,7 +590,10 @@ pub fn start_auction(id: Nat, starting_price: Nat, duration: u64) -> Result<(), 
                 return Err("Only the owner can start an auction".to_string());
             }
             nft.for_sale = true;
-            nft.sale_price = Some(starting_price);
+            nft.sale_price = Some(NFTPrice {
+                amount: starting_price,
+                currency: nft.price.currency.clone(),
+            });
             nft.auction_end_time = Some(ic_cdk::api::time() + duration);
             nft.highest_bidder = None;
             nft.highest_bid = None;
@@ -559,15 +624,13 @@ pub fn end_auction(id: Nat) -> Result<(), String> {
                 // Transfer funds
                 wallet::update_balance(
                     nft.owner,
-                    wallet::btc_to_satoshi(
-                        final_price.clone() * Nat::from(95_u32) / Nat::from(100_u32),
-                    ),
+                    final_price.amount.clone() * Nat::from(95_u32) / Nat::from(100_u32),
+                    final_price.currency.clone(),
                 )?; // 95% to seller
                 wallet::update_balance(
                     nft.creator,
-                    wallet::btc_to_satoshi(
-                        final_price.clone() * Nat::from(5_u32) / Nat::from(100_u32),
-                    ),
+                    final_price.amount * Nat::from(5_u32) / Nat::from(100_u32),
+                    final_price.currency,
                 )?; // 5% royalty to creator
 
                 // Update NFT ownership

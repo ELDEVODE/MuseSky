@@ -1,5 +1,5 @@
 [workspace]
-members = [
+members = [ 
     "src/atlist_test_backend"
-]
+, "src/atlist_test_blog"]
 resolver = "2"

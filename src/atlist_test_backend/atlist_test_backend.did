@@ -21,9 +21,12 @@ type NFT = record {
   weather_condition : text;
   owner : principal;
   name : text;
+  auction_extension_period : opt nat64;
   collection_id : nat;
+  initial_price : nat;
   highest_bidder : opt principal;
   for_sale : bool;
+  all_images : vec blob;
   created_at : nat;
   sale_price : opt nat;
   auction_end_time : opt nat64;
@@ -31,15 +34,10 @@ type NFT = record {
   image : blob;
   highest_bid : opt nat;
   price : nat;
+  last_price_update : nat64;
   location : text;
 };
 type Rarity = variant { Epic; Rare; Uncommon; Legendary; Common };
-type RarityThresholds = record {
-  epic : nat8;
-  rare : nat8;
-  common : nat8;
-  uncommon : nat8;
-};
 type Result = variant { Ok; Err : text };
 type Result_1 = variant { Ok : nat; Err : text };
 type SocialMediaLinks = record {
@@ -95,5 +93,4 @@ service : () -> {
   start_auction : (nat, nat, nat64) -> (Result);
   transfer : (principal, nat) -> (Result);
   update_balance : (principal, nat) -> (Result_1);
-  update_rarity_thresholds : (RarityThresholds) -> (Result);
 }
