@@ -1,5 +1,5 @@
 [workspace]
 members = [ 
-    "src/atlist_test_backend"
-, "src/atlist_test_blog"]
+    "src/muse_sky_backend"
+, "src/muse_sky_blog"]
 resolver = "2"

@@ -1,10 +1,10 @@
 {
-  "name": "atlist_test_frontend",
+  "name": "muse_sky_frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "setup": "npm i && dfx canister create atlist_test_backend && dfx generate atlist_test_backend && dfx deploy",
+    "setup": "npm i && dfx canister create muse_sky_backend && dfx generate muse_sky_backend && dfx deploy",
     "start": "vite --port 3000",
     "prebuild": "dfx generate",
     "build": "tsc && vite build",

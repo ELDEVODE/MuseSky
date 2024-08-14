@@ -1,20 +1,20 @@
 {
   "canisters": {
-    "atlist_test_backend": {
-      "candid": "src/atlist_test_backend/atlist_test_backend.did",
-      "package": "atlist_test_backend",
+    "muse_sky_backend": {
+      "candid": "src/muse_sky_backend/muse_sky_backend.did",
+      "package": "muse_sky_backend",
       "type": "rust"
     },
-    "atlist_test_blog": {
-      "candid": "src/atlist_test_blog/atlist_test_blog.did",
-      "package": "atlist_test_blog",
+    "muse_sky_blog": {
+      "candid": "src/muse_sky_blog/muse_sky_blog.did",
+      "package": "muse_sky_blog",
       "type": "rust"
     },
-    "atlist_test_frontend": {
-      "dependencies": ["atlist_test_backend"],
-      "source": ["src/atlist_test_frontend/dist"],
+    "muse_sky_frontend": {
+      "dependencies": ["muse_sky_backend"],
+      "source": ["src/muse_sky_frontend/dist"],
       "type": "assets",
-      "workspace": "atlist_test_frontend"
+      "workspace": "muse_sky_frontend"
     },
     "internet-identity": {
       "type": "pull",

@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { atlist_test_backend } from 'declarations/atlist_test_backend';
+import { useState } from "react";
+import { muse_sky_backend } from "declarations/muse_sky_backend";
 
 function App() {
-  const [greeting, setGreeting] = useState('');
+  const [greeting, setGreeting] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
     const name = event.target.elements.name.value;
-    atlist_test_backend.greet(name).then((greeting) => {
+    muse_sky_backend.greet(name).then((greeting) => {
       setGreeting(greeting);
     });
     return false;

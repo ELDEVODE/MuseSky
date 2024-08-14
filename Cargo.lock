@@ -15,34 +15,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
-name = "atlist_test_backend"
-version = "0.1.0"
-dependencies = [
- "candid",
- "ic-cdk",
- "ic-cdk-macros 0.15.0",
- "ic-cdk-timers",
- "ic-types",
- "serde",
- "serde_derive",
-]
-
-[[package]]
-name = "atlist_test_blog"
-version = "0.1.0"
-dependencies = [
- "candid",
- "hex",
- "ic-cdk",
- "ic-cdk-macros 0.15.0",
- "ic-cdk-timers",
- "ic-types",
- "serde",
- "serde_derive",
- "sha2",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -391,6 +363,34 @@ name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+
+[[package]]
+name = "muse_sky_backend"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "ic-cdk-macros 0.15.0",
+ "ic-cdk-timers",
+ "ic-types",
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
+name = "muse_sky_blog"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "hex",
+ "ic-cdk",
+ "ic-cdk-macros 0.15.0",
+ "ic-cdk-timers",
+ "ic-types",
+ "serde",
+ "serde_derive",
+ "sha2",
+]
 
 [[package]]
 name = "num-bigint"
