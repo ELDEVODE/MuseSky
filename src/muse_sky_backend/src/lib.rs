@@ -1,5 +1,6 @@
 use candid::{CandidType, Deserialize, Nat, Principal};
 use collection::Collection;
+use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
 use ic_cdk_macros::*;
 use wallet::Currency;
 
@@ -9,6 +10,8 @@ mod nft;
 mod social_media;
 mod wallet;
 mod weather;
+
+use weather::WeatherData;
 
 #[init]
 fn init() {
@@ -89,8 +92,13 @@ fn update_balance(owner: Principal, amount: Nat, currency: Currency) -> Result<N
 }
 
 #[query]
-fn get_weather(location: String) -> weather::WeatherData {
-    weather::get_weather(location)
+async fn get_weather_data(location: String) -> weather::WeatherData {
+    weather::get_weather(location).await
+}
+
+#[query]
+async fn get_raw_data(location: String) -> Result<String, String> {
+    weather::get_raw_weather_data(location).await
 }
 
 #[query]

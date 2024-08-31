@@ -217,19 +217,40 @@ pub fn start_weather_update_timer() {
     });
 }
 
-fn update_nft_weather_conditions() {
+async fn update_nft_weather_conditions() {
+    // Collect all NFTs and their locations first
+    let nfts_with_locations: Vec<(Nat, String)> = NFT_STORAGE.with(|storage| {
+        storage
+            .borrow()
+            .values()
+            .map(|nft| (nft.id.clone(), nft.location.clone()))
+            .collect()
+    });
+
+    // Iterate over NFTs and fetch weather data
+    let mut updated_nfts = Vec::new();
+    for (nft_id, location) in nfts_with_locations {
+        let weather_data = weather::get_weather(location.clone()).await;
+        let weather_condition = format!("{:?}", weather_data.condition.clone());
+        let image = WEATHER_IMAGES.with(|images| {
+            images
+                .borrow()
+                .get(&weather_data.condition)
+                .cloned()
+                .unwrap_or_else(Vec::new)
+        });
+
+        updated_nfts.push((nft_id, weather_condition, image));
+    }
+
+    // Update the NFT storage with the new weather data
     NFT_STORAGE.with(|storage| {
         let mut storage = storage.borrow_mut();
-        for nft in storage.values_mut() {
-            let weather_data = weather::get_weather(nft.location.clone());
-            nft.weather_condition = format!("{:?}", weather_data.condition);
-            nft.image = WEATHER_IMAGES.with(|images| {
-                images
-                    .borrow()
-                    .get(&weather_data.condition)
-                    .cloned()
-                    .unwrap_or_else(|| Vec::new())
-            });
+        for (nft_id, weather_condition, image) in updated_nfts {
+            if let Some(nft) = storage.get_mut(&nft_id) {
+                nft.weather_condition = weather_condition;
+                nft.image = image;
+            }
         }
     });
 }
@@ -281,7 +302,7 @@ pub async fn mint_nft(
         images.insert(Condition::Windy, windy_image);
     });
 
-    let weather_data = weather::get_weather(location.clone());
+    let weather_data = weather::get_weather(location.clone()).await;
 
     let weather_condition = weather_data.condition.clone();
     let image = WEATHER_IMAGES.with(|images| {
