@@ -1,30 +1,26 @@
-import { useState } from "react";
-import { muse_sky_backend } from "declarations/muse_sky_backend";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import HomePage from './pages/HomePage';
+import AuthPage from './pages/AuthPage';
+import CollectionPage from './pages/CollectionPage';
+import ExplorePage from './pages/ExplorePage';
+import BlogPage from './pages/BlogPage';
+import WalletPage from './pages/WalletPage';
+import { ROUTES } from './constants/routes';
 
 function App() {
-  const [greeting, setGreeting] = useState("");
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    muse_sky_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
-
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <Routes>
+      <Route path={ROUTES.HOME} element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path={ROUTES.AUTH} element={<AuthPage />} />
+        <Route path={ROUTES.COLLECTION} element={<CollectionPage />} />
+        <Route path={ROUTES.EXPLORE} element={<ExplorePage />} />
+        <Route path={ROUTES.BLOG} element={<BlogPage />} />
+        <Route path={ROUTES.WALLET} element={<WalletPage />} />
+      </Route>
+    </Routes>
   );
 }
 

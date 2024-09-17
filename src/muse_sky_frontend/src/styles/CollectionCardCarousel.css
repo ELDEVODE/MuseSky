@@ -1,0 +1,11 @@
+.slide-left {
+  transform: translateX(-180%);
+}
+
+.slide-right {
+  transform: translateX(180%);
+}
+
+.transition-transform-card {
+  transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}

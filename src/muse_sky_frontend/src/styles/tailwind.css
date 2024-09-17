@@ -1,0 +1,42 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  html {
+    font-family: 'Onest', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-onest {
+    font-family: 'Onest', sans-serif;
+  }
+  .font-archivo {
+    font-family: 'Archivo', sans-serif;
+  }
+  .font-oxanium {
+    font-family: 'Oxanium', cursive;
+  }
+  .font-bricolage {
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  max-width: 100vw;
+}
+
+body {
+  background-color: #000;
+  max-width: 100vw;
+}
+
+body {
+  background-color: #000;
+  max-width: 100vw;
+}
