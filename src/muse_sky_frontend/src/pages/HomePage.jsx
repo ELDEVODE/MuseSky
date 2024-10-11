@@ -8,10 +8,11 @@ import FeaturesSection from '../components/FeaturesSection'
 import AboutStack from '../components/AboutStack'
 import FAQSection from '../components/FAQSection'
 import BlogCarousel from '../components/BlogCarousel'
+import BackgroundCircles from '../components/BackgroundCircles'
 
 function HomePage() {
   return (
-    <>
+    <div className='bg-transparent relative'>
       {/* hero section */}
       <div className="max-w-[100vw] overflow-x-hidden relative">
         <div className="container my-16 pt-10 mx-auto px-6 md:px-[100px] flex flex-col md:flex-row justify-between items-center">
@@ -50,123 +51,117 @@ function HomePage() {
           </div>
         </div>
 
-        {/* background circle thingies */}
-        <div className="absolute top-0 left-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[150px] z-[-1]" />
-        <div className="absolute top-32 right-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <div className="absolute top-48 right-48 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
+
         <TwinkleStars frequency={10} />
       </div>
 
+      <div className='bg-transparent relative'>
+        <BackgroundCircles count={10} />
 
-      {/* banner section */}
-      <div className="max-w-[100vw] overflow-hidden relative">
+        {/* banner section */}
+        <div className="max-w-[100vw] overflow-hidden relative">
 
-        <BannerSection />
+          <BannerSection />
 
-        {/* background circle thingies */}
-        <TwinkleStars frequency={2} />
-      </div>
+          <TwinkleStars frequency={2} />
+        </div>
 
-      {/* Cards section */}
-      <div className='max-w-[100vw] py-[100px] overflow-hidden relative px-6 md:px-[100px]'>
-        <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
-          <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
-          <div className="flex items-center gap-4">
-            <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-            <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">Top NFTs</h2>
-            <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+        {/* Cards section */}
+        <div className='max-w-[100vw] py-[100px] overflow-hidden relative px-6 md:px-[100px]'>
+          <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
+            <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
+            <div className="flex items-center gap-4">
+              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+              <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">Top NFTs</h2>
+              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+            </div>
           </div>
-        </div>
-        <CardCarousel />
-        <div className="mt-10 w-full flex justify-center">
-          <CoolButton>View All Collection</CoolButton>
-        </div>
-
-        {/* background circle thingies */}
-        <div className="absolute top-5 right-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <div className="absolute top-48 right-48 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <TwinkleStars frequency={30} />
-      </div>
-
-      {/* collections section */}
-      <div className='max-w-[100vw] relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
-        <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
-          <div className="flex items-center gap-4">
-            <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-            <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">Top Collections</h2>
-            <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+          <CardCarousel />
+          <div className="mt-10 w-full flex justify-center">
+            <CoolButton>View All Collection</CoolButton>
           </div>
-          <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
-        </div>
-        <CollectionCardCarousel collections={collections} className="mt-[75px] md:mt-[100px] w-full mx-auto" />
-        <div className="mt-[50px] md:mt-[60px] w-full flex justify-center">
-          <CoolButton>Explore More</CoolButton>
+
+          <TwinkleStars frequency={30} />
         </div>
 
-        {/* background circle thingies */}
-        <div className="absolute top-[97px] left-0 w-48 h-48 md:w-64 md:h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <div className="absolute bottom-48 right-48 w-48 h-48 md:w-64 md:h-64 opacity-20 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <TwinkleStars frequency={18} />
-      </div>
-
-      {/* Features Section  */}
-      <div className='max-w-[100vw] relative overflow-hidden hidden md:block'>
-        <FeaturesSection />
-      </div>
-
-      {/* About Section */}
-      <div className='max-w-[100vw] pt-[150px] md:pt-[200px] relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
-        <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
-          <div className="flex items-center gap-4">
-            <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-            <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">About</h2>
-            <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+        {/* collections section */}
+        <div className='max-w-[100vw] relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
+          <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
+            <div className="flex items-center gap-4">
+              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+              <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">Top Collections</h2>
+              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+            </div>
+            <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
           </div>
+          <CollectionCardCarousel collections={collections} className="mt-[75px] md:mt-[100px] w-full mx-auto" />
+          <div className="mt-[50px] md:mt-[60px] w-full flex justify-center">
+            <CoolButton>Explore More</CoolButton>
+          </div>
+
+          <TwinkleStars frequency={18} />
         </div>
 
-        <AboutStack cards={aboutCards} className="w-full md:w-[85%] mx-auto mt-10" />
+        {/* Features Section  */}
+        <div className='max-w-[100vw] relative overflow-hidden hidden md:block'>
+          <FeaturesSection />
+        </div>
 
-        {/* background circle thingies */}
-        <div className="absolute -top-5 left-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <div className="absolute top-48 left-48 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <TwinkleStars frequency={13} />
-      </div>
-
-      {/* FAQ Section */}
-      <div className='max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden'>
-        <FAQSection />
-
-        {/* background circle thingies */}
-        <div className="absolute top-[104px] left-12 w-48 h-48 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <TwinkleStars frequency={7} />
-      </div>
-
-      {/* Blog Section */}
-      <div className='max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden'>
-        <div className="mb-[50px] flex flex-col md:flex-row justify-between items-start w-full">
-          <div className="w-full md:w-[768px] flex-col justify-start items-start gap-5 inline-flex mb-6 md:mb-0">
-            <div className="self-stretch text-white text-4xl md:text-5xl font-semibold font-bricolage">Blogs</div>
-            <div className="self-stretch text-[#dfdfd1] text-lg md:text-base font-normal font-onest leading-[30px]">The latest news, technologies, and resources from our team.</div>
+        {/* About Section */}
+        <div className='max-w-[100vw] pt-[150px] md:pt-[200px] relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
+          <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
+            <div className="flex items-center gap-4">
+              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+              <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">About</h2>
+              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+            </div>
           </div>
-          <div className="flex justify-center md:justify-end w-full hidden md:flex relative">
+
+          <AboutStack cards={aboutCards} className="w-full md:w-[85%] mx-auto mt-10" />
+
+          <TwinkleStars frequency={13} />
+        </div>
+
+        {/* FAQ Section */}
+        <div className='max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden'>
+          <FAQSection />
+
+          <TwinkleStars frequency={7} />
+        </div>
+
+        {/* Blog Section */}
+        <div className='max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden'>
+          <div className="mb-[50px] flex flex-col md:flex-row justify-between items-start w-full">
+            <div className="w-full md:w-[768px] flex-col justify-start items-start gap-5 inline-flex mb-6 md:mb-0">
+              <div className="self-stretch text-white text-4xl md:text-5xl font-semibold font-bricolage">Blogs</div>
+              <div className="self-stretch text-[#dfdfd1] text-lg md:text-base font-normal font-onest leading-[30px]">The latest news, technologies, and resources from our team.</div>
+            </div>
+            <div className="flex justify-center md:justify-end w-full hidden md:flex relative">
+              <CoolButton>View All Posts</CoolButton>
+            </div>
+          </div>
+          <BlogCarousel posts={blogPosts} />
+          <div className="flex justify-center md:justify-end mt-5 w-full flex md:hidden relative">
             <CoolButton>View All Posts</CoolButton>
           </div>
-        </div>
-        <BlogCarousel posts={blogPosts} />
-        <div className="flex justify-center md:justify-end mt-5 w-full flex md:hidden relative">
-          <CoolButton>View All Posts</CoolButton>
+
+          <TwinkleStars frequency={5} />
         </div>
 
-        {/* background circle thingies */}
-        <div className="absolute top-[140px] right-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
-        <TwinkleStars frequency={5} />
       </div>
 
       {/* NewsLetter Section */}
       <div className="max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden">
         <NewsLetterSection />
       </div>
-    </>
+
+
+
+      {/* background circle thingies */}
+      <div className="absolute top-0 left-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[150px] z-[-1]" />
+      <div className="absolute top-32 right-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
+      <div className="absolute top-48 right-48 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
+    </div>
   )
 }
 

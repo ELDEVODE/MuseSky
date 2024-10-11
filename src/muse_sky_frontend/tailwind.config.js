@@ -43,8 +43,14 @@ module.exports = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(calc(100% / 3))' },
         },
+        'bounce-horizontal': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(25%)' },
+        }
       },
       animation: {
+        'bounce-horizontal': 'bounce-horizontal 0.5s ease-in-out infinite',
+    
         'bounce-text': 'bounce-text 0.3s ease-in 2 reverse',
         'stretch-right': 'stretch-right .5s ease-in-out forwards',
         'go-left': 'go-left .5s ease-in-out forwards',

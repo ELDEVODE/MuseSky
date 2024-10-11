@@ -1,22 +1,25 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const CollectionCard = ({ image, title, creator }) => (
-  <div className="w-full max-w-[220px] h-[280px] bg-[#2a2a2a] rounded-[14px] border border-white flex-col justify-start items-center inline-flex overflow-hidden">
-    <div className="self-stretch h-[210px] rounded-tl-[14px] rounded-tr-[14px]">
-      <img className="w-full h-full object-cover" src={image} alt={title} />
-    </div>
-    <div className="w-full h-[70px] p-2.5 bg-black/50 border-t backdrop-blur-[3px] flex-col justify-between items-start flex">
-      <div className="self-stretch flex-col justify-start items-start gap-0.5 flex">
-        <div className="self-stretch text-white text-sm font-semibold font-['Bricolage Grotesque'] capitalize leading-tight truncate">{title}</div>
-        <div className="self-stretch justify-start items-center gap-1.5 inline-flex">
-          <div className="w-4 h-4 rounded-full overflow-hidden">
-            <img className="w-full h-full object-cover" src={creator.avatar} alt={creator.name} />
+const CollectionCard = ({ id, image, title, creator }) => (
+  <Link to={`/collection/${id}`} className="block w-full max-w-[220px]">
+    <div className="w-full h-[280px] bg-[#2a2a2a] rounded-[14px] border border-white flex-col justify-start items-center inline-flex overflow-hidden transition-transform duration-300 hover:scale-105">
+      <div className="self-stretch h-[210px] rounded-tl-[14px] rounded-tr-[14px]">
+        <img className="w-full h-full object-cover" src={image} alt={title} />
+      </div>
+      <div className="w-full h-[70px] p-2.5 bg-black/50 border-t backdrop-blur-[3px] flex-col justify-between items-start flex">
+        <div className="self-stretch flex-col justify-start items-start gap-0.5 flex">
+          <div className="self-stretch text-white text-sm font-semibold font-['Bricolage Grotesque'] capitalize leading-tight truncate">{title}</div>
+          <div className="self-stretch justify-start items-center gap-1.5 inline-flex">
+            <div className="w-4 h-4 rounded-full overflow-hidden">
+              <img className="w-full h-full object-cover" src={creator.avatar} alt={creator.name} />
+            </div>
+            <div className="grow shrink basis-0 text-white text-xs font-normal font-['Onest'] leading-tight truncate">{creator.name}</div>
           </div>
-          <div className="grow shrink basis-0 text-white text-xs font-normal font-['Onest'] leading-tight truncate">{creator.name}</div>
         </div>
       </div>
     </div>
-  </div>
+  </Link>
 );
 
 const CollectionGrid = ({ collections }) => {
