@@ -67,7 +67,7 @@ function Footer() {
         <div className="w-full h-[0px] flex flex-col justify-start items-start px-4 md:px-[100px]">
           <div className="w-full h-[0px] opacity-20 border-t-2 border-white"></div>
         </div>
-        <div className="text-black text-xs md:text-[15.01px] font-normal font-onest leading-normal md:leading-[27.01px] text-center">©2024 MuseSky All rights reserved</div>
+        <div className="text-black text-xs md:text-[15.01px] font-normal font-onest leading-normal md:leading-[27.01px]">©2024 MuseSky All rights reserved</div>
       </div>
     </footer>
   )
