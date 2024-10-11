@@ -1,0 +1,4 @@
+.sticky {
+  @apply sticky;
+  position: -webkit-sticky;
+}

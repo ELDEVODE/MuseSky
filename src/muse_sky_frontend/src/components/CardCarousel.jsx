@@ -14,6 +14,7 @@ const theimages = [
 
 const CardCarousel = ({ images = theimages }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
     if (images.length === 0) return;
@@ -22,7 +23,15 @@ const CardCarousel = ({ images = theimages }) => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000); // Change card every 3 seconds
 
-    return () => clearInterval(interval);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [images.length]);
 
   const getCardStyle = (index) => {
@@ -52,6 +61,7 @@ const CardCarousel = ({ images = theimages }) => {
       transform: `translateX(${translateX}%) scale(${scale})`,
       zIndex,
       filter: `brightness(${brightness}%)`,
+      display: diff <= 2 || diff >= images.length - 2 ? 'block' : 'none',
     };
   };
 
@@ -59,8 +69,11 @@ const CardCarousel = ({ images = theimages }) => {
     return <div>No images to display</div>;
   }
 
+  const cardWidth = isMobile ? "250px" : "306px";
+  const cardHeight = isMobile ? "325px" : "400px";
+
   return (
-    <div className="relative h-[530px] w-full px-4 overflow-hidden">
+    <div className="relative h-[400px] md:h-[530px] w-full px-4 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center">
         {images.map((image, index) => (
           <div
@@ -69,8 +82,8 @@ const CardCarousel = ({ images = theimages }) => {
             style={getCardStyle(index)}
           >
             <DisplayCard
-              width="306px"
-              height="400px"
+              width={cardWidth}
+              height={cardHeight}
               imageUrl={image}
             />
           </div>

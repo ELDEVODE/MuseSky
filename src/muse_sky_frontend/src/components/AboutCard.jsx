@@ -2,11 +2,11 @@ import React from 'react'
 
 const AboutCard = ({ imageSrc, title, description }) => {
   return (
-    <div className="h-[360px] px-16 justify-start items-center inline-flex">
-      <img className="w-[280px] h-[360px] relative rounded-[10px]" src={imageSrc} alt={title} />
-      <div className="grow shrink basis-0 px-12 py-6 flex-col justify-start items-start gap-3 inline-flex">
-        <div className="text-white text-3xl font-bold font-onest capitalize">{title}</div>
-        <div className="self-stretch text-white text-sm font-normal font-onest">{description}</div>
+    <div className="flex flex-col md:flex-row items-center md:items-start px-4 md:px-16">
+      <img className="w-full md:w-[280px] h-[240px] md:h-[360px] object-cover rounded-[10px] mb-4 md:mb-0" src={imageSrc} alt={title} />
+      <div className="md:grow md:shrink md:basis-0 px-0 md:px-12 py-4 md:py-6 flex flex-col justify-start items-start gap-3">
+        <div className="text-white text-2xl md:text-3xl font-bold font-onest capitalize">{title}</div>
+        <div className="text-white text-sm font-normal font-onest">{description}</div>
       </div>
     </div>
   )
