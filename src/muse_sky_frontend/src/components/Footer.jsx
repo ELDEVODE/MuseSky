@@ -20,12 +20,12 @@ function Footer() {
             <img
               className="h-[70px]"
               src={Logo} alt="" />
-            <div className="text-white text-3xl font-bold font-oxanium uppercase">MUSESKY</div>
+            <div className="text-white text-lg font-bold font-oxanium uppercase">MUSESKY</div>
           </div>
           <div className="h-[197.01px] flex justify-between items-start">
             <div className="self-stretch py-2 flex flex-col justify-between items-start">
               <div className="grow shrink basis-0 flex flex-col justify-between items-start">
-                <div className="w-[295.65px] text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[27.01px]">
+                <div className="w-[295.65px] text-[#5f491f] text-[15.01px] font-medium font-onest leading-[27.01px]">
                   Musesky is an NFTs marketplace built on the internet computer where you can discover, sell and bid NFTs and get rich
                 </div>
                 <div className="flex justify-start items-center gap-4 mt-4">
@@ -46,21 +46,21 @@ function Footer() {
             </div>
             <div className="h-[197.01px] flex justify-between items-start ml-8">
               <div className="flex flex-col justify-start items-start gap-[13.51px] mr-8">
-                <div className="w-[72.04px] text-[#261d0c] text-lg font-bold font-['Onest'] leading-relaxed">About</div>
+                <div className="w-[72.04px] text-[#261d0c] text-lg font-bold font-onest leading-relaxed">About</div>
                 <div className="flex flex-col justify-start items-start gap-[1.50px]">
-                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">About NFT</Link>
-                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Live Auctions</Link>
-                  <Link to={ROUTES.BLOG} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">NFT Blog</Link>
-                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Activity</Link>
+                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">About NFT</Link>
+                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Live Auctions</Link>
+                  <Link to={ROUTES.BLOG} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">NFT Blog</Link>
+                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Activity</Link>
                 </div>
               </div>
               <div className="flex flex-col justify-start items-start gap-[13.51px]">
-                <div className="w-[72.04px] text-[#261d0c] text-lg font-bold font-['Onest'] leading-relaxed">Support</div>
+                <div className="w-[72.04px] text-[#261d0c] text-lg font-bold font-onest leading-relaxed">Support</div>
                 <div className="flex flex-col justify-start items-start gap-[1.50px]">
-                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Help & Support</Link>
-                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Item Details</Link>
-                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Author Profile</Link>
-                  <Link to={ROUTES.COLLECTION} className="text-[#5f491f] text-[15.01px] font-medium font-['Onest'] leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Collection</Link>
+                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Help & Support</Link>
+                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Item Details</Link>
+                  <Link to={ROUTES.HOME} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Author Profile</Link>
+                  <Link to={ROUTES.COLLECTION} className="text-[#5f491f] text-[15.01px] font-medium font-onest leading-[37.89px] transition-colors duration-200 ease-in-out hover:text-[#261d0c]">Collection</Link>
                 </div>
               </div>
             </div>
@@ -69,7 +69,7 @@ function Footer() {
         <div className="self-stretch h-[0px] px-[100px] flex flex-col justify-start items-start">
           <div className="self-stretch h-[0px] opacity-20 border-2 border-white"></div>
         </div>
-        <div className="text-black text-[15.01px] font-normal font-['Onest'] leading-[27.01px]">©2024 MuseSky All rights reserved</div>
+        <div className="text-black text-[15.01px] font-normal font-onest leading-[27.01px]">©2024 MuseSky All rights reserved</div>
       </div>
     </footer>
   )

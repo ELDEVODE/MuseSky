@@ -4,8 +4,8 @@ const BlogPost = ({ title, content, imageUrl }) => (
   <div className="w-72 flex-col justify-start items-start gap-4 inline-flex cursor-pointer">
     <img className="h-40 w-full object-cover relative rounded-lg" src={imageUrl} alt={title} />
     <div className="self-stretch flex-col justify-start items-start gap-2 flex">
-      <div className="self-stretch text-white text-lg font-semibold font-['Onest'] leading-tight truncate">{title}</div>
-      <div className="self-stretch h-14 text-[#dfdfd1] text-sm font-normal font-['Onest'] leading-snug overflow-hidden">
+      <div className="self-stretch text-white text-lg font-semibold font-onest leading-tight truncate">{title}</div>
+      <div className="self-stretch h-14 text-[#dfdfd1] text-sm font-normal font-onest leading-snug overflow-hidden">
         {content.length > 100 ? `${content.substring(0, 100)}...` : content}
       </div>
     </div>

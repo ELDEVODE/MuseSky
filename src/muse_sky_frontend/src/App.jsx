@@ -1,12 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import AuthPage from './pages/AuthPage';
-import CollectionPage from './pages/CollectionPage';
-import ExplorePage from './pages/ExplorePage';
-import BlogPage from './pages/BlogPage';
-import WalletPage from './pages/WalletPage';
+import { HomePage, AuthPage, CollectionPage, ExplorePage, BlogPage, WalletPage, CollectionDetails } from './pages';
 import { ROUTES } from './constants/routes';
 
 function App() {
@@ -19,6 +14,7 @@ function App() {
         <Route path={ROUTES.EXPLORE} element={<ExplorePage />} />
         <Route path={ROUTES.BLOG} element={<BlogPage />} />
         <Route path={ROUTES.WALLET} element={<WalletPage />} />
+        <Route path={ROUTES.COLLECTION_DETAILS} element={<CollectionDetails />} />
       </Route>
     </Routes>
   );

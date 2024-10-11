@@ -18,7 +18,7 @@ const CoolButton = ({ onClick, className, children }) => {
 
       <div className="w-[27px] h-[27px] left-[17px] top-[5px] absolute origin-top-left rotate-45 bg-white/20 rounded-[4px] border border-[#ffc966] backdrop-blur-[12.63px] group-hover:animate-go-left group-hover:left-[12px] transition-position duration-100 ease-out" />
       <div className={`flex h-[29px] w-full relative justify-center items-center `}>
-        <span className="z-3 text-[#201604] text-base font-semibold font-['Archivo'] group-hover:animate-bounce-text">{children}</span>
+        <span className="z-3 text-[#201604] text-base font-semibold font-archivo group-hover:animate-bounce-text">{children}</span>
       </div>
       <div className="w-[27px] h-[27px] left-[219px] top-[5px] absolute origin-top-left rotate-45 bg-white/20 rounded-[4px] border border-[#ffc966] backdrop-blur-[12.63px] group-hover:animate-stretch-right group-hover:left-[224px] transition-position duration-100 ease-out" />
     </button>

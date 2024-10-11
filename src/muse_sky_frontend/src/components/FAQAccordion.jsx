@@ -42,12 +42,12 @@ const FAQAccordion = () => {
             onClick={() => toggleItem(index)}
             className="flex justify-between items-center w-full p-4 text-left"
           >
-            <span className="text-white text-lg font-semibold font-['Onest']">{item.question}</span>
+            <span className="text-white text-lg font-semibold font-onest">{item.question}</span>
             <span className="text-white text-xl border-2 border-[#eaecf0] rounded-full w-6 h-6 flex items-center justify-center">{openIndex === index ? '−' : '+'}</span>
           </button>
           {openIndex === index && (
             <div className="px-4 pb-4">
-              <p className="text-[#eaecf0] text-base font-normal font-['Onest'] leading-normal">{item.answer}</p>
+              <p className="text-[#eaecf0] text-base font-normal font-onest leading-normal">{item.answer}</p>
             </div>
           )}
         </div>

@@ -41,7 +41,7 @@ module.exports = {
         },
         'scroll-right': {
           '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(calc(100% / 5))' },
+          '100%': { transform: 'translateX(calc(100% / 3))' },
         },
       },
       animation: {

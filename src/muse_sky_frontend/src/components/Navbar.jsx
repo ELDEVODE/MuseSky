@@ -37,7 +37,7 @@ function Navbar() {
             >
               <Link
                 to={item.to}
-                className="text-[#a5a5a5] text-xs font-medium font-['Onest'] transition-all duration-300 hover:text-white"
+                className="text-[#a5a5a5] text-xs font-medium font-onest transition-all duration-300 hover:text-white"
               >
                 {item.text}
               </Link>
@@ -52,10 +52,10 @@ function Navbar() {
               whileHover={{ y: "-50%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <span className="flex items-center justify-center text-[#2a2a2a] text-sm font-semibold font-['Archivo'] whitespace-nowrap h-5">
+              <span className="flex items-center justify-center text-[#2a2a2a] text-sm font-semibold font-archivo whitespace-nowrap h-5">
                 Login with Internet Identity
               </span>
-              <span className="flex items-center justify-center text-[#2a2a2a] text-sm font-semibold font-['Archivo'] whitespace-nowrap h-5">
+              <span className="flex items-center justify-center text-[#2a2a2a] text-sm font-semibold font-archivo whitespace-nowrap h-5">
                 Connect Now
               </span>
             </motion.div>

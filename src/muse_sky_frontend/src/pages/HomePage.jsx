@@ -37,13 +37,13 @@ function HomePage() {
               </div>
               <div className="bottom flex flex-row justify-between w-full mt-2">
                 <div className="flex flex-col justify-start items-start gap-1">
-                  <div className="text-[#d7d7d7] text-sm font-semibold font-['Onest']">MDR collection</div>
-                  <div className="text-[#d7d7d7] text-xs font-normal font-['Onest']">MDR #10123334</div>
+                  <div className="text-[#d7d7d7] text-sm font-semibold font-onest">MDR collection</div>
+                  <div className="text-[#d7d7d7] text-xs font-normal font-onest">MDR #10123334</div>
                 </div>
                 <div className="flex flex-col justify-start items-end gap-1">
-                  <div className="text-[#d7d7d7] text-sm font-semibold font-['Onest']">Top bid</div>
-                  <div className="text-[#d7d7d7] text-xs font-normal font-['Onest']">3.222</div>
-                  <div className="text-[#d7d7d7] text-xs font-normal font-['Onest']">7days left</div>
+                  <div className="text-[#d7d7d7] text-sm font-semibold font-onest">Top bid</div>
+                  <div className="text-[#d7d7d7] text-xs font-normal font-onest">3.222</div>
+                  <div className="text-[#d7d7d7] text-xs font-normal font-onest">7days left</div>
                 </div>
               </div>
             </div>
@@ -70,10 +70,10 @@ function HomePage() {
       {/* Cards section */}
       <div className='max-w-[100vw] py-[100px] overflow-hidden relative'>
         <div className="mx-auto w-full flex-col justify-center items-center gap-4 inline-flex">
-          <div className="text-white text-xl font-normal font-['Onest'] ">Explore our new NFT collection</div>
+          <div className="text-white text-xl font-normal font-onest ">Explore our new NFT collection</div>
           <div className="flex items-center gap-4">
             <div className="w-6 h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-            <h2 className="text-center text-white text-5xl font-bold font-['Bricolage Grotesque'] mx-2">Top NFTs</h2>
+            <h2 className="text-center text-white text-5xl font-bold font-bricolage mx-2">Top NFTs</h2>
             <div className="w-6 h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
           </div>
         </div>
@@ -93,10 +93,10 @@ function HomePage() {
         <div className="mx-auto w-full flex-col justify-center items-center gap-4 inline-flex">
           <div className="flex items-center gap-4">
             <div className="w-6 h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-            <h2 className="text-center text-white text-5xl font-bold font-['Bricolage Grotesque'] mx-2">Top Collections</h2>
+            <h2 className="text-center text-white text-5xl font-bold font-bricolage mx-2">Top Collections</h2>
             <div className="w-6 h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
           </div>
-          <div className="text-white text-xl font-normal font-['Onest']">Explore our new NFT collection</div>
+          <div className="text-white text-xl font-normal font-onest">Explore our new NFT collection</div>
         </div>
         <CollectionCardCarousel collections={collections} className="mt-[100px] w-[70%] mx-auto" />
         <div className="my-[60px] w-full flex justify-center">
@@ -119,7 +119,7 @@ function HomePage() {
         <div className="mx-auto w-full flex-col justify-center items-center gap-4 inline-flex">
           <div className="flex items-center gap-4">
             <div className="w-6 h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-            <h2 className="text-center text-white text-5xl font-bold font-['Bricolage Grotesque'] mx-2">About</h2>
+            <h2 className="text-center text-white text-5xl font-bold font-bricolage mx-2">About</h2>
             <div className="w-6 h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
           </div>
         </div>
@@ -145,8 +145,8 @@ function HomePage() {
       <div className='max-w-[100vw] px-[100px] py-[100px] relative overflow-hidden'>
         <div className="h-[108px] mb-[50px] justify-between items-start inline-flex w-full">
           <div className="w-[768px] flex-col justify-start items-start gap-5 inline-flex">
-            <div className="self-stretch text-white text-5xl font-semibold font-['Bricolage Grotesque']">Blogs</div>
-            <div className="self-stretch text-[#dfdfd1] text-base font-normal font-['Onest'] leading-[30px]">The latest news, technologies, and resources from our team.</div>
+            <div className="self-stretch text-white text-5xl font-semibold font-bricolage">Blogs</div>
+            <div className="self-stretch text-[#dfdfd1] text-base font-normal font-onest leading-[30px]">The latest news, technologies, and resources from our team.</div>
           </div>
           <div className="flex justify-end w-full relative">
             <CoolButton>View All Posts</CoolButton>
@@ -163,8 +163,7 @@ function HomePage() {
       <div className="max-w-[100vw] px-[100px] py-[100px] relative overflow-hidden">
         <NewsLetterSection />
 
-        {/* background circle thingies */}
-        <div className="absolute top-12 left-0 w-48 h-48 opacity-15 bg-[#ff8f1f] rounded-full blur-[100px] z-[-1]" />
+
       </div>
     </>
   )
