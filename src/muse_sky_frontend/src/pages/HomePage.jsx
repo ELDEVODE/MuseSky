@@ -1,5 +1,4 @@
 import React from 'react'
-import { sunClouds } from '../assets/images'
 import { BannerSection, CardCarousel, CoolButton, FAQAccordion, NewsLetterSection, TwinkleStars } from '../components'
 import { Star7 } from '../assets/svg'
 import CollectionCardCarousel from '../components/CollectionCardCarousel'
@@ -9,13 +8,14 @@ import AboutStack from '../components/AboutStack'
 import FAQSection from '../components/FAQSection'
 import BlogCarousel from '../components/BlogCarousel'
 import BackgroundCircles from '../components/BackgroundCircles'
+import HeroCard from '../components/HeroCard'
 
 function HomePage() {
   return (
-    <div className='bg-transparent relative'>
+    <div className='bg-transparent relative max-w-[100vw]'>
       {/* hero section */}
-      <div className="max-w-[100vw] overflow-x-hidden relative">
-        <div className="container my-16 pt-10 mx-auto px-6 md:px-[100px] flex flex-col md:flex-row justify-between items-center">
+      <div className="max-w-[100vw] md:pt-12 overflow-x-hidden relative">
+        <div className="max-w-6xl my-16 pt-10 mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex-col justify-center items-start gap-8 inline-flex mb-12 md:mb-0">
             <div className="flex-col justify-start items-start gap-6 flex">
               <div className="self-stretch flex-col justify-start items-start gap-2 flex">
@@ -30,27 +30,9 @@ function HomePage() {
             <CoolButton>Collect Now</CoolButton>
           </div>
 
-          {/* card section */}
-          <div className="w-full md:w-[350px] h-[400px] relative">
-            <div className="w-full h-full p-3 absolute rounded-2xl border border-[#ffaa0c] flex-col justify-start items-start inline-flex">
-              <div className="w-full mx-auto bg-white/20 rounded-xl overflow-hidden">
-                <img className="w-full h-[300px] object-cover" src={sunClouds} alt="NFT Preview" />
-              </div>
-              <div className="bottom flex flex-row justify-between w-full mt-2">
-                <div className="flex flex-col justify-start items-start gap-1">
-                  <div className="text-[#d7d7d7] text-base md:text-sm font-semibold font-onest">MDR collection</div>
-                  <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">MDR #10123334</div>
-                </div>
-                <div className="flex flex-col justify-start items-end gap-1">
-                  <div className="text-[#d7d7d7] text-base md:text-sm font-semibold font-onest">Top bid</div>
-                  <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">3.222</div>
-                  <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">7days left</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* HeroCard component */}
+          <HeroCard />
         </div>
-
 
         <TwinkleStars frequency={10} />
       </div>
@@ -85,18 +67,20 @@ function HomePage() {
         </div>
 
         {/* collections section */}
-        <div className='max-w-[100vw] relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
-          <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
-            <div className="flex items-center gap-4">
-              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-              <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">Top Collections</h2>
-              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+        <div className='w-full relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
+          <div className="max-w-6xl mx-auto">
+            <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
+              <div className="flex items-center gap-4">
+                <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+                <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">Top Collections</h2>
+                <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+              </div>
+              <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
             </div>
-            <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
-          </div>
-          <CollectionCardCarousel collections={collections} className="mt-[75px] md:mt-[100px] w-full mx-auto" />
-          <div className="mt-[50px] md:mt-[60px] w-full flex justify-center">
-            <CoolButton>Explore More</CoolButton>
+            <CollectionCardCarousel collections={collections} className="mt-[75px] md:mt-[100px] w-full mx-auto" />
+            <div className="mt-[50px] md:mt-[60px] w-full flex justify-center">
+              <CoolButton>Explore More</CoolButton>
+            </div>
           </div>
 
           <TwinkleStars frequency={18} />
@@ -108,18 +92,20 @@ function HomePage() {
         </div>
 
         {/* About Section */}
-        <div className='max-w-[100vw] pt-[150px] md:pt-[200px] relative py-[75px] md:py-[100px] overflow-hidden px-6 md:px-[100px]'>
-          <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
-            <div className="flex items-center gap-4">
-              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
-              <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">About</h2>
-              <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+        <div className='w-full relative'>
+          <div className='max-w-6xl mx-auto pt-[150px] md:pt-[200px] relative py-[75px] md:py-[100px] overflow-hidden px-6'>
+            <div className="mx-auto w-full flex-col justify-center items-center gap-6 inline-flex">
+              <div className="flex items-center gap-4">
+                <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+                <h2 className="text-center text-white text-4xl md:text-5xl font-bold font-bricolage mx-2">About</h2>
+                <div className="w-5 h-5 md:w-6 md:h-6 rotate-45 bg-white/20 rounded-md border border-white backdrop-blur-sm" />
+              </div>
             </div>
+
+            <AboutStack cards={aboutCards} className="w-full md:w-[85%] mx-auto mt-10" />
           </div>
 
-          <AboutStack cards={aboutCards} className="w-full md:w-[85%] mx-auto mt-10" />
-
-          <TwinkleStars frequency={13} />
+          <TwinkleStars frequency={18} />
         </div>
 
         {/* FAQ Section */}
@@ -130,19 +116,21 @@ function HomePage() {
         </div>
 
         {/* Blog Section */}
-        <div className='max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden'>
-          <div className="mb-[50px] flex flex-col md:flex-row justify-between items-start w-full">
-            <div className="w-full md:w-[768px] flex-col justify-start items-start gap-5 inline-flex mb-6 md:mb-0">
-              <div className="self-stretch text-white text-4xl md:text-5xl font-semibold font-bricolage">Blogs</div>
-              <div className="self-stretch text-[#dfdfd1] text-lg md:text-base font-normal font-onest leading-[30px]">The latest news, technologies, and resources from our team.</div>
+        <div className='max-w-[100vw] px-6 py-[75px] md:py-[100px] relative overflow-hidden'>
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-[50px] flex flex-col md:flex-row justify-between items-start w-full">
+              <div className="w-full md:w-[768px] flex-col justify-start items-start gap-5 inline-flex mb-6 md:mb-0">
+                <div className="self-stretch text-white text-4xl md:text-5xl font-semibold font-bricolage">Blogs</div>
+                <div className="self-stretch text-[#dfdfd1] text-lg md:text-base font-normal font-onest leading-[30px]">The latest news, technologies, and resources from our team.</div>
+              </div>
+              <div className="flex justify-center md:justify-end w-full hidden md:flex relative">
+                <CoolButton>View All Posts</CoolButton>
+              </div>
             </div>
-            <div className="flex justify-center md:justify-end w-full hidden md:flex relative">
+            <BlogCarousel posts={blogPosts} />
+            <div className="flex justify-center md:justify-end mt-5 w-full flex md:hidden relative">
               <CoolButton>View All Posts</CoolButton>
             </div>
-          </div>
-          <BlogCarousel posts={blogPosts} />
-          <div className="flex justify-center md:justify-end mt-5 w-full flex md:hidden relative">
-            <CoolButton>View All Posts</CoolButton>
           </div>
 
           <TwinkleStars frequency={5} />

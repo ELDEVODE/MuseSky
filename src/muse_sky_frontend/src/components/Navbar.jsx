@@ -191,7 +191,7 @@ function Navbar() {
 
         {/* Desktop Menu */}
         <motion.div
-          className="hidden md:flex px-6 py-2 bg-white/20 rounded-lg border border-[#ffc966] backdrop-blur-[15px] items-center gap-3"
+          className="hidden md:flex px-6 py-2 bg-white/20 rounded-lg border border-[#ffc966] backdrop-blur-[15px] items-center gap-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -201,7 +201,7 @@ function Navbar() {
             { to: ROUTES.COLLECTION, text: "Collection" },
             { to: ROUTES.EXPLORE, text: "Explore" },
             { to: ROUTES.BLOG, text: "Blog" },
-            { to: ROUTES.WALLET, text: "Wallet" },
+            // { to: ROUTES.WALLET, text: "Wallet" },
           ].map((item) => (
             <motion.div
               key={item.text}
@@ -211,7 +211,7 @@ function Navbar() {
             >
               <Link
                 to={item.to}
-                className="text-[#a5a5a5] text-xs font-medium font-['Onest'] transition-all duration-300 hover:text-white"
+                className="text-[#a5a5a5] text-sm font-medium font-['Onest'] transition-all duration-300 hover:text-white"
               >
                 {item.text}
               </Link>
@@ -263,7 +263,7 @@ function Navbar() {
                     { to: ROUTES.COLLECTION, text: 'Collection' },
                     { to: ROUTES.EXPLORE, text: 'Explore' },
                     { to: ROUTES.BLOG, text: 'Blog' },
-                    { to: ROUTES.WALLET, text: 'Wallet' },
+                    // { to: ROUTES.WALLET, text: 'Wallet' },
                   ].map((item) => (
                     <Link
                       key={item.text}
@@ -292,23 +292,22 @@ function Navbar() {
         {/* Desktop Login Button */}
         <motion.button
           onClick={isAuthenticated ? handleLogout : handleLogin}
-          className="px-4 py-2 bg-gradient-to-r from-[#ffa500] to-[#ffc966] hidden md:flex rounded-md border border-[#ffc252] backdrop-blur-[12.63px] items-center gap-2 group"
-          whileHover={{ scale: 1.05 }}
+          className="px-4 py-2 bg-gradient-to-r from-[#ffa500] to-[#ffc966] hidden md:flex rounded-md border border-[#ffc252] backdrop-blur-[12.63px] items-center gap-2 group overflow-hidden"
           whileTap={{ scale: 0.95 }}
         >
           <div className="relative overflow-hidden h-5 w-[180px]">
             <motion.div
               className="flex flex-col"
               initial={{ y: 0 }}
-              whileHover={{ y: isAuthenticated ? "-50%" : "0%" }}
+              whileHover={{ y: "-50%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <span className="flex items-center justify-center text-[#2a2a2a] text-xs font-medium font-['Onest'] whitespace-nowrap h-5">
+              <span className="flex items-center justify-center text-[#2a2a2a] text-sm font-medium font-['Onest'] whitespace-nowrap h-5">
                 {isAuthenticated
                   ? truncatePrincipalId(principalId)
                   : "Login with Internet Identity"}
               </span>
-              <span className="flex items-center justify-center text-[#2a2a2a] text-xs font-medium font-['Onest'] whitespace-nowrap h-5">
+              <span className="flex items-center justify-center text-[#2a2a2a] text-sm font-medium font-['Onest'] whitespace-nowrap h-5">
                 {isAuthenticated ? "Logout" : "Connect Now"}
               </span>
             </motion.div>

@@ -32,7 +32,7 @@ const BlogCarousel = ({ posts }) => {
   };
 
   return (
-    <div className="w-full px-4 flex-col justify-center items-between gap-8 inline-flex">
+    <div className="w-full px-4 flex-col justify-center items-between gap-8 flex">
       <div className="flex flex-col md:flex-row justify-between items-start gap-4 relative overflow-hidden">
         {posts.slice(currentIndex, currentIndex + 3).map((post, index) => (
           <div

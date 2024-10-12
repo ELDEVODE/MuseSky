@@ -4,7 +4,8 @@ import { TwinkleStars } from '../components';
 import BackgroundCircles from '../components/BackgroundCircles';
 import { FiShare2, FiX, FiHeart } from 'react-icons/fi';
 import NFTCard from '../components/NFTCard';
-import { testNFTs, weatherConditions, weatherIcons } from '../testdata/nftData';
+import { testNFTs, weatherConditions, weatherIcons, collection } from '../testdata/nftData';
+import { ROUTES } from '../constants/routes';
 
 function CollectionDetailPage() {
   const { id } = useParams();
@@ -38,7 +39,7 @@ function CollectionDetailPage() {
       setSelectedNFT(nft);
       setPreviewIndex(0);
     } else {
-      navigate(`/nft/${nft.id}`);
+      navigate(`${ROUTES.NFT_DETAIL}/${nft.id}`);
     }
   };
 
@@ -49,7 +50,7 @@ function CollectionDetailPage() {
 
   const handleBuyNow = () => {
     if (selectedNFT) {
-      navigate(`/nft/${selectedNFT.id}`);
+      navigate(`${ROUTES.NFT_DETAIL}/${selectedNFT.id}`);
     }
   };
 
@@ -67,32 +68,10 @@ function CollectionDetailPage() {
 
   const isNFTSaved = (nftId) => savedNFTs.some((nft) => nft.id === nftId);
 
-  // Placeholder data
-  const collection = {
-    id,
-    title: `The Orbitians`,
-    description: `The Orbitians is a collection of 10,000 unique NFTs on the Ethereum blockchain.
-    There are all sorts of beings in the NFT Universe. The most advanced and friendly
-    of the bunch are Orbitians. They live in metal space machines, high up in the sky
-    and only have one foot on Earth.
-    
-    These Orbitians are a peaceful race, but they have been at war with a group of invaders
-    for many generations. The invaders are called Upside-Downs, because of their inverted
-    bodies that live on the ground, yet do not know any other way to be. Upside-Downs believe
-    that they will be able to win this war if they could only get an eye into Orbitian territory,
-    so they've taken to make human beings their target.`,
-    creator: {
-      name: 'Orbitian',
-      avatar: 'https://via.placeholder.com/24x24',
-    },
-    mintDate: 'Sep 30, 2022',
-    basePrice: '0.024 ETH',
-    priceUSD: '$3,618.36',
-    priceChange: '+2.48%',
-    tags: ['Animation', 'Illustration', 'Moon', 'Space', 'Galaxy', 'NFT'],
-    views: '10k',
-    likes: 234,
+  const handleGoToArtistPage = () => {
+    navigate(`${ROUTES.ARTIST_DETAILS}/${collection.creator.id}`);
   };
+
 
   return (
     <div className="relative w-full text-white py-2 px-6 md:px-6 lg:px-8 pb-32">
@@ -175,9 +154,12 @@ function CollectionDetailPage() {
           ))}
         </div>
         <div className="mt-8 md:mt-12 flex justify-center md:justify-end">
-          <button className="w-full md:w-auto px-4 md:px-6 py-3 bg-white/20 rounded-xl border-2 border-[#ffc966] backdrop-blur-sm text-white font-medium 
-            hover:bg-[#ffc966] hover:text-black transition-all duration-300 ease-out
-            flex items-center justify-center gap-2 group">
+          <button
+            onClick={handleGoToArtistPage}
+            className="w-full md:w-auto px-4 md:px-6 py-3 bg-white/20 rounded-xl border-2 border-[#ffc966] backdrop-blur-sm text-white font-medium 
+              hover:bg-[#ffc966] hover:text-black transition-all duration-300 ease-out
+              flex items-center justify-center gap-2 group"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none"
               className="mr-2 transition-all duration-300 group-hover:animate-bounce-horizontal">
               <path d="M3.125 9.48145C2.64175 9.48145 2.25 9.8732 2.25 10.3564C2.25 10.8397 2.64175 11.2314 3.125 11.2314H16.875C17.3582 11.2314 17.75 10.8397 17.75 10.3564C17.75 9.8732 17.3582 9.48145 16.875 9.48145H3.125Z" fill="#FFC252" stroke="#FFC252" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:fill-black group-hover:stroke-black" />
@@ -231,7 +213,7 @@ function CollectionDetailPage() {
       )}
 
       <BackgroundCircles count={5} />
-      <TwinkleStars frequency={20} />
+      <TwinkleStars frequency={25} />
     </div>
   )
 }

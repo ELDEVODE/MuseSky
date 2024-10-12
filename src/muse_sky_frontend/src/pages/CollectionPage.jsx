@@ -61,17 +61,13 @@ function CollectionPage() {
   const handlePageChange = useCallback((pageNumber) => {
     console.log('handlePageChange called with:', pageNumber);
     if (typeof pageNumber === 'number' && pageNumber >= 1 && pageNumber <= totalPages) {
-      console.log('Setting current page to:', pageNumber);
       setCurrentPage(pageNumber);
       window.scrollTo(0, 0);
     }
   }, [totalPages]);
 
-  console.log('Current page:', currentPage);
-  console.log('Total pages:', totalPages);
-
   return (
-    <div className="w-full text-white overflow-hidden px-4 md:px-0">
+    <div className="w-full text-white overflow-hidden px-6">
       <div className='relative'>
         {/* Browse Collections Searchbar */}
         <div className="w-full py-8 mt-[100px] bg-transparent flex justify-center items-center relative">
@@ -138,7 +134,7 @@ function CollectionPage() {
 
         {/* Add background circle elements */}
         <BackgroundCircles count={5} />
-        <TwinkleStars frequency={20} />
+        <TwinkleStars frequency={30} />
       </div>
 
       {/* NewsLetter Section */}

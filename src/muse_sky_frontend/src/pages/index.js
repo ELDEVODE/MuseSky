@@ -5,3 +5,5 @@ export { default as ExplorePage } from './ExplorePage';
 export { default as HomePage } from './HomePage';
 export { default as WalletPage } from './WalletPage';
 export { default as AuthPage } from './AuthPage';
+export { default as NFTDetail } from './NFTDetail';
+export { default as ArtistDetails } from './ArtistDetails';

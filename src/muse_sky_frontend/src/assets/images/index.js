@@ -21,3 +21,14 @@ export { default as Spaceman } from './Spaceman.png';
 export { default as About } from './About.png';
 export { default as Team } from './Team.png';
 export { default as Logo } from './file.png';
+
+
+export { default as sunnySkeleton } from './sunny-skeleton.jpg'
+export { default as cloudySkeleton } from './cloudy-skeleton.jpg'
+export { default as rainySkeleton } from './rainy-skeleton.jpg'
+export { default as snowySkeleton } from './cozy-skeleton.jpg'
+
+export { default as sunny } from './sun.png'
+export { default as cloudy } from './clouds.png'
+export { default as rainy } from './rainy-day.png'
+export { default as snowy } from './snow.png'

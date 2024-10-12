@@ -8,8 +8,12 @@ export const ROUTES = {
 
   // collection routes
 
-  COLLECTION_DETAILS: '/collection/:collectionId',
+  COLLECTION_DETAILS: '/collection',
   COLLECTION_CREATOR: '/collection/:collectionId/creator',
-  COLLECTION_ITEMS: '/collection/:collectionId/items',
-  COLLECTION_ITEMS_DETAILS: '/collection/:collectionId/items/:itemId',
+
+  // NFT route
+  NFT_DETAIL: '/nft',
+
+  //Artist routes
+  ARTIST_DETAILS: '/artist',
 };

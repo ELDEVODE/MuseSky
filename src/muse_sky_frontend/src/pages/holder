@@ -1,0 +1,58 @@
+   <div className="flex flex-col md:flex-row gap-8">
+          <div className="md:w-1/2">
+            <div className="relative aspect-square">
+              <img
+                src={nft.all_images[currentImageIndex]}
+                alt={nft.title}
+                className="w-full h-full object-cover rounded-lg"
+              />
+              <div className="absolute top-2 right-2 bg-black/50 rounded-full p-2 backdrop-blur-sm">
+                <span className="text-2xl">{weatherIcons[weatherConditions[currentImageIndex]]}</span>
+              </div>
+            </div>
+          </div>
+          <div className="md:w-1/2">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4">{nft.title}</h1>
+            <p className="text-base md:text-lg text-gray-400 mb-6">{nft.description}</p>
+            <div className="flex items-center gap-4 mb-6">
+              <img src={nft.creator.avatar} alt={nft.creator.name} className="w-12 h-12 rounded-full" />
+              <div>
+                <p className="text-sm text-gray-400">Created by</p>
+                <p className="text-lg font-semibold">{nft.creator.name}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 mb-8">
+              <button
+                className="px-6 py-3 bg-[#ffc966] text-black font-semibold rounded-lg hover:bg-[#ffb733] transition-colors duration-300"
+              >
+                Buy Now
+              </button>
+              <button
+                onClick={toggleLike}
+                className="p-3 bg-white/20 rounded-full hover:bg-white/30 transition-colors duration-300"
+              >
+                <FiHeart size={24} color={isLiked ? "#FF72D2" : "white"} />
+              </button>
+              <button className="p-3 bg-white/20 rounded-full hover:bg-white/30 transition-colors duration-300">
+                <FiShare2 size={24} color="white" />
+              </button>
+            </div>
+            <div className="bg-white/10 rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">Details</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-400">Token ID</p>
+                  <p className="text-base font-semibold">{nft.tokenId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Token Standard</p>
+                  <p className="text-base font-semibold">{nft.tokenStandard}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Blockchain</p>
+                  <p className="text-base font-semibold">{nft.blockchain}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>

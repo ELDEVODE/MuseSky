@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import { HomePage, AuthPage, CollectionPage, ExplorePage, BlogPage, WalletPage, CollectionDetails } from './pages';
+import { HomePage, AuthPage, CollectionPage, ExplorePage, BlogPage, WalletPage, CollectionDetails, NFTDetail, ArtistDetails } from './pages';
 import { ROUTES } from './constants/routes';
 
 function App() {
@@ -14,7 +14,9 @@ function App() {
         <Route path={ROUTES.EXPLORE} element={<ExplorePage />} />
         <Route path={ROUTES.BLOG} element={<BlogPage />} />
         <Route path={ROUTES.WALLET} element={<WalletPage />} />
-        <Route path={ROUTES.COLLECTION_DETAILS} element={<CollectionDetails />} />
+        <Route path={`${ROUTES.COLLECTION_DETAILS}/:collectionId`} element={<CollectionDetails />} />
+        <Route path={`${ROUTES.NFT_DETAIL}/:nftId`} element={<NFTDetail />} />
+        <Route path={`${ROUTES.ARTIST_DETAILS}/:artistId`} element={<ArtistDetails />} />
       </Route>
     </Routes>
   );
