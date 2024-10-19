@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { BannerSection, CardCarousel, CoolButton, FAQAccordion, NewsLetterSection, TwinkleStars } from '../components'
 import { Star7 } from '../assets/svg'
 import CollectionCardCarousel from '../components/CollectionCardCarousel'
@@ -9,8 +9,13 @@ import FAQSection from '../components/FAQSection'
 import BlogCarousel from '../components/BlogCarousel'
 import BackgroundCircles from '../components/BackgroundCircles'
 import HeroCard from '../components/HeroCard'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../constants/routes'
+import LoadingScreen from '../components/LoadingScreen'
 
 function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <div className='bg-transparent relative max-w-[100vw]'>
       {/* hero section */}
@@ -27,7 +32,7 @@ function HomePage() {
                 <div className="self-stretch text-white text-lg md:text-base font-normal font-onest mt-6">Where Bitcoin meets digital art, evolving with nature's rhythm</div>
               </div>
             </div>
-            <CoolButton>Collect Now</CoolButton>
+            <CoolButton onClick={() => navigate(ROUTES.COLLECTION)}>Collect Now</CoolButton>
           </div>
 
           {/* HeroCard component */}
@@ -60,7 +65,7 @@ function HomePage() {
           </div>
           <CardCarousel />
           <div className="mt-10 w-full flex justify-center">
-            <CoolButton>View All Collection</CoolButton>
+            <CoolButton onClick={() => navigate(ROUTES.COLLECTION)}>View All Collection</CoolButton>
           </div>
 
           <TwinkleStars frequency={30} />
@@ -77,7 +82,7 @@ function HomePage() {
               </div>
               <div className="text-white text-xl md:text-2xl font-normal font-onest text-center">Explore our new NFT collection</div>
             </div>
-            <CollectionCardCarousel collections={collections} className="mt-[75px] md:mt-[100px] w-full mx-auto" />
+            <CollectionCardCarousel collections={collections} className="mt-[75px] md:mt-[100px] max-w-5xl mx-auto" />
             <div className="mt-[50px] md:mt-[60px] w-full flex justify-center">
               <CoolButton>Explore More</CoolButton>
             </div>
@@ -124,12 +129,12 @@ function HomePage() {
                 <div className="self-stretch text-[#dfdfd1] text-lg md:text-base font-normal font-onest leading-[30px]">The latest news, technologies, and resources from our team.</div>
               </div>
               <div className="flex justify-center md:justify-end w-full hidden md:flex relative">
-                <CoolButton>View All Posts</CoolButton>
+                <CoolButton onClick={() => navigate(ROUTES.BLOG)}>View All Posts</CoolButton>
               </div>
             </div>
             <BlogCarousel posts={blogPosts} />
             <div className="flex justify-center md:justify-end mt-5 w-full flex md:hidden relative">
-              <CoolButton>View All Posts</CoolButton>
+              <CoolButton onClick={() => navigate(ROUTES.BLOG)}>View All Posts</CoolButton>
             </div>
           </div>
 
@@ -142,8 +147,6 @@ function HomePage() {
       <div className="max-w-[100vw] px-6 md:px-[100px] py-[75px] md:py-[100px] relative overflow-hidden">
         <NewsLetterSection />
       </div>
-
-
 
       {/* background circle thingies */}
       <div className="absolute top-0 left-0 w-64 h-64 opacity-30 bg-[#ff8f1f] rounded-full blur-[150px] z-[-1]" />

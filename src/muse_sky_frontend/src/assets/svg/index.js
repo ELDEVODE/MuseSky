@@ -10,3 +10,10 @@ export { default as BannnerFrame2 } from './BannerFrame2.svg';
 export { default as MUSESKY } from './MUSESKY.svg';
 export { default as Star10 } from './Star10.svg';
 
+export { default as CloudPush } from './cloudpush.svg';
+export { default as Dashbaord } from './dashboard.svg';
+export { default as PublicProfile } from './publicProfile.svg';
+export { default as MyCollections } from './myCollections.svg';
+export { default as AccountSettings } from './accountSettings.svg';
+export { default as Logout } from './logout.svg';
+

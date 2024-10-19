@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DisplayCard from './DisplayCard';
 import { Rectangle25, Rectangle26, Rectangle27, Rectangle28, Rectangle29, Rectangle30, Rectangle31 } from '../assets/images';
+import useImagePreloader from '../hooks/useImagePreloader';
 
 const theimages = [
   Rectangle25,
@@ -15,6 +16,7 @@ const theimages = [
 const CardCarousel = ({ images = theimages }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const imagesPreloaded = useImagePreloader(images);
 
   useEffect(() => {
     if (images.length === 0) return;
@@ -71,6 +73,14 @@ const CardCarousel = ({ images = theimages }) => {
 
   const cardWidth = isMobile ? "250px" : "306px";
   const cardHeight = isMobile ? "325px" : "400px";
+
+  if (!imagesPreloaded) {
+    return (
+      <div className="flex justify-center items-center h-[400px] md:h-[530px]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-[400px] md:h-[530px] w-full px-4 overflow-hidden">

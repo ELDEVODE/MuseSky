@@ -15,7 +15,7 @@ function Footer() {
         src={vector} alt="vector"
       />
       <div className="w-full md:w-auto grow shrink basis-0 py-8 md:py-16 px-6 md:px-16 bg-white/20 rounded-2xl border-2 border-white backdrop-blur-[39px] flex flex-col justify-start md:items-center items-start gap-8">
-        <div className="w-full flex flex-col md:flex-row justify-start md:justify-between items-start md:w-[80%] gap-8 md:gap-48">
+        <div className="w-full flex flex-col md:flex-row justify-start md:justify-between items-start md:mx-auto md:w-[85%] gap-8 md:gap-48">
           <div className="flex flex-col justify-center items-start gap-2">
             <img
               className="h-[60px] md:h-[70px]"
@@ -23,7 +23,7 @@ function Footer() {
             <div className="text-white text-base md:text-lg font-bold font-oxanium uppercase">MUSESKY</div>
           </div>
           <div className="w-full md:grow flex flex-col md:flex-row justify-between items-start gap-8 md:gap-0">
-            <div className="w-full w-auto flex flex-col justify-between items-start">
+            <div className="w-auto flex flex-col justify-between items-start">
               <div className="w-full md:w-[295.65px] text-left text-[#5f491f] text-sm md:text-[15.01px] font-medium font-onest leading-[24px] md:leading-[27.01px]">
                 Musesky is an NFTs marketplace built on the internet computer where you can discover, sell and bid NFTs and get rich
               </div>
@@ -42,7 +42,7 @@ function Footer() {
                 </a>
               </div>
             </div>
-            <div className="w-full md:w-auto flex flex-row justify-between md:justify-start items-start gap-8 md:gap-16 md:ml-8">
+            <div className="w-auto md:w-auto flex flex-row justify-between md:justify-start items-start gap-8 md:gap-16 md:ml-8">
               <div className="flex flex-col justify-start items-start gap-[13.51px]">
                 <div className="text-[#261d0c] text-base md:text-lg font-bold font-onest leading-relaxed">About</div>
                 <div className="flex flex-col justify-start items-start gap-[1.50px]">

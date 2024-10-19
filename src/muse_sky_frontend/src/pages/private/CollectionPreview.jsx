@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TwinkleStars } from '../components';
-import BackgroundCircles from '../components/BackgroundCircles';
+import { TwinkleStars } from '../../components';
+import BackgroundCircles from '../../components/BackgroundCircles';
 import { FiShare2, FiX, FiHeart } from 'react-icons/fi';
-import NFTCard from '../components/NFTCard';
-import { testNFTs, weatherConditions, weatherIcons, collection } from '../testdata/nftData';
-import { ROUTES } from '../constants/routes';
-import Pagination from '../components/Pagination';
+import NFTCard from '../../components/NFTCard';
+import { testNFTs, weatherConditions, weatherIcons, collection } from '../../testdata/nftData';
+import { ROUTES } from '../../constants/routes';
+import { FaPlus } from 'react-icons/fa';
+import Pagination from '../../components/Pagination';
 
-function CollectionDetailPage() {
+function CollectionPreview() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
@@ -156,38 +157,54 @@ function CollectionDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-16">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8">NFTs in this Collection</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-          {currentNFTs.map((nft, index) => (
-            <div key={index} className="w-full max-w-[220px] mx-auto" onClick={() => handleNFTClick(nft)}>
-              <NFTCard nft={nft} />
+      {1 ? <div className="max-w-6xl mx-auto mt-16">
+        <div className="rounded-xl border-2 mx-auto border-[#ffc252] border-dashed flex items-center justify-center m-8 py-8 md:py-16 w-[80%] md:w-[60%]">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="w-8 h-8 relative">
+              <FaPlus className="text-white text-3xl" />
             </div>
-          ))}
+            <div>
+              <h2 className="text-white text-lg sm:text-xl font-extrabold font-['Bricolage Grotesque'] leading-tight">No NFTs in Collection</h2>
+              <p className="text-white/20 text-sm sm:text-base font-light font-['Onest'] leading-snug">Create your first NFT</p>
+            </div>
+            <button
+              className="w-full p-3 bg-white/20 rounded-xl border-2 border-[#ffc966] backdrop-blur-[12.63px] text-[#ffc252] text-md sm:text-sm font-medium font-['Onest'] leading-7 transition-all duration-300 hover:bg-white/30 hover:text-white"
+              onClick={() => navigate(ROUTES.CREATE_NFT)}
+            >
+              Create a new NFT
+            </button>
+          </div>
         </div>
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        )}
-        <div className="mt-8 md:mt-12 flex justify-center md:justify-end">
-          <button
-            onClick={handleGoToArtistPage}
-            className="w-full md:w-auto px-4 md:px-6 py-3 bg-white/20 rounded-xl border-2 border-[#ffc966] backdrop-blur-sm text-white font-medium 
-              hover:bg-[#ffc966] hover:text-black transition-all duration-300 ease-out
-              flex items-center justify-center gap-2 group"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none"
-              className="mr-2 transition-all duration-300 group-hover:animate-bounce-horizontal">
-              <path d="M3.125 9.48145C2.64175 9.48145 2.25 9.8732 2.25 10.3564C2.25 10.8397 2.64175 11.2314 3.125 11.2314H16.875C17.3582 11.2314 17.75 10.8397 17.75 10.3564C17.75 9.8732 17.3582 9.48145 16.875 9.48145H3.125Z" fill="#FFC252" stroke="#FFC252" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:fill-black group-hover:stroke-black" />
-              <path d="M10.6313 15.3627L10.6313 15.3627C10.2896 15.7044 10.2896 16.2585 10.6313 16.6002L10.6313 16.6002C10.973 16.9419 11.527 16.9419 11.8687 16.6002L17.4937 10.9752C17.8354 10.6335 17.8354 10.0794 17.4937 9.73773L11.8687 4.11273C11.527 3.77102 10.973 3.77102 10.6313 4.11273C10.2896 4.45444 10.2896 5.00846 10.6313 5.35016L15.6376 10.3564L10.6313 15.3627Z" fill="#FFC252" stroke="#FFC252" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:fill-black group-hover:stroke-black" />
-            </svg>
-            <span>Go To Artist Page</span>
-          </button>
-        </div>
-      </div>
+      </div> :
+        <div className="max-w-6xl mx-auto mt-16">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-8">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8">NFTs in this Collection</h2>
+
+            {testNFTs.length > 0 && (
+              <button
+                className="group justify-center md:justify-start px-4 py-2 rounded-lg bg-[#ffc252] text-[#2c2520] text-md sm:text-base font-medium font-['Onest'] flex items-center gap-2 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,194,82,0.5)] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#ffc252] focus:ring-opacity-50 active:scale-100"
+                onClick={() => { navigate(ROUTES.CREATE_NFT) }}
+              >
+                <FaPlus className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:rotate-90" />
+                <span>Add NFT</span>
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+            {currentNFTs.map((nft, index) => (
+              <div key={index} className="w-full max-w-[220px] mx-auto" onClick={() => handleNFTClick(nft)}>
+                <NFTCard nft={nft} />
+              </div>
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </div>}
 
       {selectedNFT && isMobile && (
         <div className="fixed inset-0 mx-6 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -213,18 +230,7 @@ function CollectionDetailPage() {
                 onClick={handleBuyNow}
                 className="flex-1 py-3 bg-[#ffc966] text-black font-semibold rounded-lg hover:bg-[#ffb733] transition-colors duration-300"
               >
-                Buy Now
-              </button>
-              <button
-                onClick={handleSave}
-                className={`flex-1 py-3 font-semibold rounded-lg transition-colors duration-300 flex items-center justify-center gap-2
-                  ${isNFTSaved(selectedNFT.id)
-                    ? "bg-[#FF72D2] text-white hover:bg-[#FF4BC7]"
-                    : "bg-white text-black hover:bg-gray-200"
-                  }`}
-              >
-                <FiHeart size={18} />
-                {isNFTSaved(selectedNFT.id) ? "Saved" : "Save"}
+                View NFT
               </button>
             </div>
           </div>
@@ -237,4 +243,4 @@ function CollectionDetailPage() {
   )
 }
 
-export default CollectionDetailPage;
+export default CollectionPreview;

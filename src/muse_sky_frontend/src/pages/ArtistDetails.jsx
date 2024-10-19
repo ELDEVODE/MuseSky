@@ -13,7 +13,7 @@ function ArtistDetails() {
     avatar: 'https://via.placeholder.com/100x100',
     bio: 'Orbitian is a renowned digital artist known for creating unique NFT collections that blend space themes with abstract art.',
     collections: ['The Orbitians', 'Space Odyssey', 'Cosmic Dreams'],
-    totalSales: '1,000 ETH',
+    totalSales: '1,000 ckBTC',
     followers: '10k',
   };
 

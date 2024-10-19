@@ -86,59 +86,53 @@ function HeroCard() {
 
   return (
     <div className="w-full md:w-[350px] h-[400px] relative group">
-      {imagesLoaded ? (
-        <div className="w-full h-full p-3 absolute rounded-2xl border border-[#ffaa0c] flex-col justify-start items-start inline-flex overflow-visible">
-          <div className="w-full h-[300px] mx-auto bg-white/20 rounded-xl overflow-hidden relative">
-            <GlitchEffect isActive={isGlitching}>
-              <img
-                key={currentImageIndex}
-                className="w-full h-auto object-cover object-top"
-                src={skeletonImages[currentImageIndex]}
-                alt="NFT Preview"
-              />
-            </GlitchEffect>
-          </div>
-          <AnimatePresence initial={false} mode="sync">
-            <motion.div
+      <div className="w-full h-full p-3 absolute rounded-2xl border border-[#ffaa0c] flex-col justify-start items-start inline-flex overflow-visible">
+        <div className="w-full h-[300px] mx-auto bg-white/20 rounded-xl overflow-hidden relative">
+          <GlitchEffect isActive={isGlitching}>
+            <img
               key={currentImageIndex}
-              className="absolute top-[2%] right-[-7%] w-[25%] h-auto"
-              initial={{ x: '100%', opacity: 0, rotate: -45 }}
-              animate={{ x: 0, opacity: 1, rotate: 0 }}
-              exit={{ x: '-100%', opacity: 0, rotate: 45 }}
-              transition={{ duration: 0.15, ease: 'easeInOut' }} // Reduced duration for faster transition
+              className="w-full h-auto object-cover object-top"
+              src={skeletonImages[currentImageIndex]}
+              alt="NFT Preview"
+            />
+          </GlitchEffect>
+        </div>
+        <AnimatePresence initial={false} mode="sync">
+          <motion.div
+            key={currentImageIndex}
+            className="absolute top-[2%] right-[-7%] w-[25%] h-auto"
+            initial={{ x: '100%', opacity: 0, rotate: -45 }}
+            animate={{ x: 0, opacity: 1, rotate: 0 }}
+            exit={{ x: '-100%', opacity: 0, rotate: 45 }}
+            transition={{ duration: 0.15, ease: 'easeInOut' }} // Reduced duration for faster transition
+          >
+            <motion.div
+              className={`w-full h-full ${weatherEffects[currentImageIndex]}`}
+              animate={pulseAnimation}
             >
-              <motion.div
-                className={`w-full h-full ${weatherEffects[currentImageIndex]}`}
-                animate={pulseAnimation}
-              >
-                <motion.img
-                  src={weatherImages[currentImageIndex]}
-                  alt="Weather Icon"
-                  className="w-full h-full"
-                  animate={floatingAnimation}
-                  whileHover={{ scale: 1.1, rotate: 15 }}
-                  style={{ originX: 0.5, originY: 0.5 }}
-                />
-              </motion.div>
+              <motion.img
+                src={weatherImages[currentImageIndex]}
+                alt="Weather Icon"
+                className="w-full h-full"
+                animate={floatingAnimation}
+                whileHover={{ scale: 1.1, rotate: 15 }}
+                style={{ originX: 0.5, originY: 0.5 }}
+              />
             </motion.div>
-          </AnimatePresence>
-          <div className="bottom flex flex-row justify-between w-full mt-2">
-            <div className="flex flex-col justify-start items-start gap-1">
-              <div className="text-[#d7d7d7] text-base md:text-sm font-semibold font-onest">Chill Bones</div>
-              <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">Chill Bones #10123334</div>
-            </div>
-            <div className="flex flex-col justify-start items-end gap-1">
-              <div className="text-[#d7d7d7] text-base md:text-sm font-semibold font-onest">Top bid</div>
-              <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">3.222</div>
-              <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">7days left</div>
-            </div>
+          </motion.div>
+        </AnimatePresence>
+        <div className="bottom flex flex-row justify-between w-full mt-2">
+          <div className="flex flex-col justify-start items-start gap-1">
+            <div className="text-[#d7d7d7] text-base md:text-sm font-semibold font-onest">Chill Bones</div>
+            <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">Chill Bones #10123334</div>
+          </div>
+          <div className="flex flex-col justify-start items-end gap-1">
+            <div className="text-[#d7d7d7] text-base md:text-sm font-semibold font-onest">Top bid</div>
+            <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">3.222</div>
+            <div className="text-[#d7d7d7] text-sm md:text-xs font-normal font-onest">7days left</div>
           </div>
         </div>
-      ) : (
-        <div className="w-full h-full flex items-center justify-center">
-          <p>Loading...</p>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

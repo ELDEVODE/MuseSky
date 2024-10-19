@@ -5,7 +5,10 @@ import BackgroundCircles from '../components/BackgroundCircles';
 import { testNFT, collection, testNFTs, weatherConditions, weatherIcons } from '../testdata/nftData';
 import { FiShare2, FiX, FiHeart } from 'react-icons/fi';
 import NFTCard from '../components/NFTCard';
+import CheckoutModal from '../components/CheckoutModal';
 import { ROUTES } from '../constants/routes';
+import { defaultUser } from '../assets/images';
+import Pagination from '../components/Pagination';
 
 function NFTDetail() {
   const { id } = useParams();
@@ -16,6 +19,9 @@ function NFTDetail() {
   const [previewIndex, setPreviewIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [savedNFTs, setSavedNFTs] = useState([]);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [nftsPerPage] = useState(10);
 
   useEffect(() => {
     setNFT(testNFT);
@@ -77,104 +83,68 @@ function NFTDetail() {
     navigate(`${ROUTES.ARTIST_DETAILS}/${collection.creator.id}`);
   };
 
+  const handlePurchaseNow = () => {
+    setShowCheckoutModal(true);
+  };
+
+  // Calculate pagination
+  const indexOfLastNFT = currentPage * nftsPerPage;
+  const indexOfFirstNFT = indexOfLastNFT - nftsPerPage;
+  const currentNFTs = testNFTs.slice(indexOfFirstNFT, indexOfLastNFT);
+  const totalPages = Math.ceil(testNFTs.length / nftsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="relative w-full text-white py-2 px-4 md:px-6 pb-24 md:pb-32">
-      <div className="max-w-5xl mx-auto mt-12 md:mt-24">
-        <div className=''>
-          <h1 className="text-2xl md:text-4xl font-semibold mb-2">{collection.title}</h1>
-          <p className="text-sm md:text-base text-gray-400 mb-3">Minted on {collection.mintDate}</p>
-          <div className="mb-3">
-            <h2 className="text-base font-bold text-gray-400 mb-2">Created By</h2>
-            <div className="flex items-center gap-3">
-              <img className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" src={collection.creator.avatar} alt={collection.creator.name} />
-              <span className="text-base md:text-lg font-semibold">{collection.creator.name}</span>
+      <div className='mt-16 flex flex-col max-w-6xl mx-auto'>
+        <div className='flex flex-col shrink grow max-w-[450px] justify-center items-center mx-auto'>
+          <div className="flex flex-col gap-6 w-full">
+            <div className="p-4 bg-[#3b3b3b]/70 backdrop-blur-[2px] rounded-xl">
+              <div className="flex justify-between items-center mb-1">
+                <h2 className="text-base font-bold">NFT Title</h2>
+                <span className="text-sm text-gray-300">Location: {nft?.location || 'Unknown'}</span>
+              </div>
+              <h3 className="text-2xl font-semibold">{nft?.title}</h3>
+            </div>
+
+            <div className="w-full aspect-square bg-[#ffc252]/20 rounded-xl shadow border-2 backdrop-filter border-[#C3C6CE] backdrop-blur-[36.85px] flex justify-center items-center p-3 relative">
+              <img
+                className="w-full h-full object-cover rounded-lg"
+                src={nft?.image || "https://via.placeholder.com/500"}
+                alt={nft?.title || "NFT Image"}
+              />
+              <div className="absolute bottom-5 right-5 bg-black/50 rounded-full p-2 backdrop-blur-sm flex items-center gap-2">
+                <span className="text-2xl">{weatherIcons[nft?.current_weather]}</span>
+                <span className="text-sm p-2 pl-0">{nft?.current_weather}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className='mt-12 md:mt-16'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12'>
-            {/* for mobile */}
-            <div className="flex md:hidden flex-col gap-6">
-              <div className="p-4 bg-[#3b3b3b] rounded-xl">
-                <h2 className="text-base font-bold mb-1">NFT Title</h2>
-                <h3 className="text-2xl font-semibold">{nft?.title}</h3>
-              </div>
-
-              <div className="w-full aspect-square bg-[#ffc252]/20 rounded-xl shadow border-2 border-black/0 backdrop-blur-[36.85px] flex justify-center items-center p-3 relative">
-                <img
-                  className="w-full h-full object-cover rounded-lg"
-                  src={nft?.image || "https://via.placeholder.com/500"}
-                  alt={nft?.title || "NFT Image"}
-                />
-                <div className="absolute bottom-5 right-5 bg-black/50 rounded-full p-2 backdrop-blur-sm flex items-center gap-2">
-                  <span className="text-2xl">{weatherIcons[nft?.current_weather]}</span>
-                  <span className="text-sm p-2 pl-0">{nft?.current_weather}</span>
-                </div>
-              </div>
+        <div className="p-5 bg-[#3b3b3b]/70 backdrop-blur-[2px] shrink grow w-full sm:max-w-[450px] md:max-w-[450px] mx-auto rounded-xl mt-10">
+          <div className="mb-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Current Price</span>
+              <span className="text-[#27d1aa] inline-flex items-center gap-1 text-sm"><div className="p-[3px] bg-[#27d1aa]/25 rounded-[40px] justify-center items-center flex">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 17L9 11L13 15L21 7" stroke="#27d1aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14 7H21V14" stroke="#27d1aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>+2.48%</span>
             </div>
-
-            {/* for desktop */}
-            <div className="flex flex-col gap-6">
-              <div className="p-5 bg-[#3b3b3b] rounded-xl">
-                <div className="mb-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Current Price</span>
-                    <span className="text-[#27d1aa] inline-flex items-center gap-1 text-sm"><div className="p-[3px] bg-[#27d1aa]/25 rounded-[40px] justify-center items-center flex">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 17L9 11L13 15L21 7" stroke="#27d1aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M14 7H21V14" stroke="#27d1aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>+2.48%</span>
-                  </div>
-                  <div className="flex items-end gap-2 mt-1">
-                    <span className="text-2xl font-semibold">0.024 ETH</span>
-                    <span className="text-[#e6e6eb] text-xs">($3,618.36)</span>
-                  </div>
-                </div>
-                <div className="flex flex-col justify-between sm:flex-row gap-3">
-                  <CoolButton>Purchase Now</CoolButton>
-                  <button className="px-3 py-1.5 bg-white/10 rounded-xl border-2 border-[#ffc966] text-sm">
-                    Save NFT
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-5 bg-[#3b3b3b] rounded-xl grow flex flex-col justify-between">
-                <div>
-                  <h3 className="text-lg font-bold mb-3">Description</h3>
-                  <p className="mb-5 text-sm">{collection.description}</p>
-                </div>
-
-                <div className="mb-8">
-                  <h3 className="text-lg font-bold mb-3">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {['Animation', 'Moon', 'Illustration', 'Space'].map((tag, index) => (
-                      <span key={index} className="px-2 py-0.5 bg-[#545454] rounded-full text-xs">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-end gap-2 mt-1">
+              <span className="text-2xl font-semibold">0.024 ckBTC</span>
+              <span className="text-[#e6e6eb] text-xs">($3,618.36)</span>
             </div>
-
-            <div className="hidden md:flex flex-col gap-6">
-              <div className="p-4 bg-[#3b3b3b] rounded-xl">
-                <h2 className="text-base font-bold mb-1">NFT Title</h2>
-                <h3 className="text-2xl font-semibold">{nft?.title}</h3>
-              </div>
-
-              <div className="w-full aspect-square bg-[#ffc252]/20 rounded-xl shadow border-2 border-black/0 backdrop-blur-[36.85px] flex justify-center items-center p-3 relative">
-                <img
-                  className="w-full h-full object-cover rounded-lg"
-                  src={nft?.image || "https://via.placeholder.com/500"}
-                  alt={nft?.title || "NFT Image"}
-                />
-                <div className="absolute bottom-5 right-5 bg-black/50 rounded-full p-2 backdrop-blur-sm flex items-center gap-2">
-                  <span className="text-2xl">{weatherIcons[nft?.current_weather]}</span>
-                  <span className="text-sm p-2 pl-0">{nft?.current_weather}</span>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div className="flex flex-col justify-between md:flex-row justify-center items-center md:items-unset md:justify-unset sm gap-3">
+            <CoolButton onClick={handlePurchaseNow} className={"mx-auto md:mx-0"}>Purchase Now</CoolButton>
+            <button className="flex justify-center p-3 bg-white/10 rounded-xl border-2 border-[#ffc966] w-[178px] md:w-auto text-sm">
+              Save NFT
+            </button>
           </div>
         </div>
 
@@ -199,11 +169,48 @@ function NFTDetail() {
       <div className="max-w-6xl mx-auto mt-16">
         <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8">NFTs in this Collection</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-          {testNFTs.slice(0, 10).map((nft, index) => (
+          {currentNFTs.map((nft, index) => (
             <div key={index} className="w-full max-w-[220px] mx-auto" onClick={() => handleNFTClick(nft)}>
               <NFTCard nft={nft} />
             </div>
           ))}
+        </div>
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </div>
+
+      <div className="max-w-6xl mx-auto mt-12 md:mt-24">
+        <div className=''>
+          <h1 className="text-2xl md:text-4xl font-semibold mb-2">{collection.title}</h1>
+          <p className="text-sm md:text-base text-gray-400 mb-3">Minted on {collection.mintDate}</p>
+          <div className="mb-3">
+            <h2 className="text-base font-bold text-gray-400 mb-2">Created By</h2>
+            <div className="flex items-center gap-3">
+              <img className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" src={collection.creator.avatar ?? defaultUser} alt={collection.creator.name} />
+              <span className="text-base md:text-lg font-semibold">{collection.creator.name}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-5 bg-[#3b3b3b]/70 backdrop-blur-[2px] mt-12 rounded-xl grow flex flex-col justify-between">
+          <div>
+            <h3 className="text-lg font-bold mb-3">Description</h3>
+            <p className="mb-5 text-sm">{collection.description}</p>
+          </div>
+
+          <div className="mb-8">
+            <h3 className="text-lg font-bold mb-3">Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {['Animation', 'Moon', 'Illustration', 'Space'].map((tag, index) => (
+                <span key={index} className="px-2 py-0.5 bg-[#545454] rounded-full text-xs">{tag}</span>
+              ))}
+            </div>
+          </div>
         </div>
         <div className="mt-8 md:mt-12 flex justify-center md:justify-end">
           <button
@@ -264,7 +271,14 @@ function NFTDetail() {
         </div>
       )}
 
-      <BackgroundCircles count={8} />
+      {showCheckoutModal && (
+        <CheckoutModal
+          nft={nft}
+          onClose={() => setShowCheckoutModal(false)}
+        />
+      )}
+
+      <BackgroundCircles count={12} />
       <TwinkleStars frequency={30} />
     </div>
   );

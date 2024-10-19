@@ -21,6 +21,9 @@ export { default as Spaceman } from './Spaceman.png';
 export { default as About } from './About.png';
 export { default as Team } from './Team.png';
 export { default as Logo } from './file.png';
+export { default as defaultUser } from './defaultUser.png'
+export { default as coverBg } from './coverbg.png'
+export { default as bull } from './Image.png'
 
 
 export { default as sunnySkeleton } from './sunny-skeleton.jpg'

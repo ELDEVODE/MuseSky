@@ -1,4 +1,4 @@
-import { Rectangle25, Rectangle26, Rectangle27, Rectangle28, images101 } from '../assets/images';
+import { Rectangle25, Rectangle26, Rectangle27, Rectangle28, defaultUser, images101 } from '../assets/images';
 
 export const weatherConditions = ['Sunny', 'Windy', 'Cloudy', 'Rainy'];
 
@@ -20,6 +20,18 @@ function getRandomWeather() {
   return weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
 }
 
+// Add this array of world cities
+const worldCities = [
+  "New York", "Tokyo", "London", "Paris", "Sydney", "Rio de Janeiro", "Moscow", "Dubai",
+  "Singapore", "Berlin", "Rome", "Cairo", "Mumbai", "Toronto", "Seoul", "Amsterdam",
+  "Istanbul", "Bangkok", "Cape Town", "Buenos Aires", "Vancouver", "San Francisco",
+  "Madrid", "Vienna", "Prague", "Stockholm", "Helsinki", "Oslo", "Copenhagen", "Athens", "Lagos",
+  "Cincinnati", "Benin"
+];
+
+// Function to get a random city
+const getRandomCity = () => worldCities[Math.floor(Math.random() * worldCities.length)];
+
 export const testNFTs = Array.from({ length: 100 }, (_, index) => {
   const weather = getRandomWeather();
   return {
@@ -29,10 +41,13 @@ export const testNFTs = Array.from({ length: 100 }, (_, index) => {
     image: weatherImages[weather],
     all_images: Object.values(weatherImages),
     weather_icon: weatherIcons[weather],
+    basePrice: '0.024',
+    priceUSD: '$3,618.36',
     creator: {
       name: "John Doe",
-      avatar: Image
-    }
+      avatar: defaultUser
+    },
+    location: getRandomCity() 
   };
 });
 
@@ -54,10 +69,10 @@ export const collection = {
   creator: {
     id: 'orbitian-id',
     name: 'Orbitian',
-    avatar: 'https://via.placeholder.com/24x24',
+    avatar: defaultUser,
   },
   mintDate: 'Sep 30, 2022',
-  basePrice: '0.024 ETH',
+  basePrice: '0.024 ckBTC',
   priceUSD: '$3,618.36',
   priceChange: '+2.48%',
   tags: ['Animation', 'Illustration', 'Moon', 'Space', 'Galaxy', 'NFT'],
