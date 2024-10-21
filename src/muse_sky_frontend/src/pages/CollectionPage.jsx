@@ -7,12 +7,15 @@ import { testImages, testCollections } from '../testdata/collectionData';
 import { TwinkleStars } from '../components'
 import BackgroundCircles from '../components/BackgroundCircles';
 import Pagination from '../components/Pagination';
+import { useAllCollections } from '../store/BackendCall'
 
 function CollectionPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('')
   const collectionsPerPage = 12
+
+  const { data: collections, refetch: refetchCollections } = useAllCollections();
 
   const filteredCollections = useMemo(() => {
     return testCollections.filter(collection =>

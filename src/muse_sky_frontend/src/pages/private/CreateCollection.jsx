@@ -6,6 +6,8 @@ import BackgroundCircles from '../../components/BackgroundCircles';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './QuillEditor.css';
+import SocialMediaLinks from '../../components/socialMediaLinks';
+import { useCreateCollection, useAllCollections, uint8ArrayToImageUrl } from '../../store/BackendCall';
 
 function CreateCollection() {
   const navigate = useNavigate();
@@ -22,6 +24,13 @@ function CreateCollection() {
   const fileInputRef = useRef(null);
   const dragCounter = useRef(0);
   const dropZoneRef = useRef(null);
+  const [socialLinks, setSocialLinks] = useState({
+    website: '',
+    instagram: '',
+    discord: '',
+    telegram: '',
+    x: ''
+  });
 
   useEffect(() => {
     if (quillRef.current) {
@@ -36,10 +45,37 @@ function CreateCollection() {
     }
   }, []);
 
+  const { mutate: createCollection, isLoading, isError, isSuccess, data } = useCreateCollection();
+  const { data: collections, refetch: refetchCollections } = useAllCollections();
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchCollections();
+    }
+  }, [isSuccess, refetchCollections]);
+
+
+  useEffect(() => {
+    // Example of setting focus state
+    if (coverImage) {
+      setIsFocused(true);
+    } else {
+      setIsFocused(false);
+    }
+  }, [coverImage]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement the logic to create a new collection
-    console.log('Creating collection:', { collectionName, description, tags, coverImage });
+    createCollection({
+      name: collectionName,
+      image: coverImage,
+      description,
+      website: socialLinks.website,
+      x: socialLinks.x,
+      instagram: socialLinks.instagram,
+      discord: socialLinks.discord,
+      telegram: socialLinks.telegram,
+    });
   };
 
   const handleImageUpload = (file) => {
@@ -151,6 +187,10 @@ function CreateCollection() {
     }
   };
 
+  const imageUrl = collections?.length > 0 ? uint8ArrayToImageUrl(collections[3]?.image) : null;
+
+
+
   return (
     <div className="relative w-full text-white overflow-hidden px-6">
       <div className="relative mb-10">
@@ -159,6 +199,8 @@ function CreateCollection() {
             <h1 className="text-4xl sm:text-5xl font-bold font-['Bricolage Grotesque'] capitalize leading-tight mb-1">
               CREATE NEW COLLECTION
             </h1>
+            {/* {console.log('collections', imageUrl)}
+            <img src={imageUrl} alt="Collection" className="w-full h-full" /> */}
             <p className="text-sm font-normal font-['Onest'] leading-relaxed">
               Create your own unique NFT collection and share it with the world.
             </p>
@@ -182,11 +224,6 @@ function CreateCollection() {
               </div>
 
               <div className="relative">
-                {/* {!isFocused && description === '' && (
-                  <div className="absolute top-0 left-0 p-3 text-[#858584] pointer-events-none">
-                    Add the description
-                  </div>
-                )} */}
                 <ReactQuill
                   ref={quillRef}
                   placeholder='Add a description'
@@ -289,6 +326,8 @@ function CreateCollection() {
                 </div>
               </div>
 
+              <SocialMediaLinks setSocialLinks={setSocialLinks} />
+
               <div className="pt-4 flex justify-between items-center">
                 <button
                   type="submit"
@@ -307,8 +346,6 @@ function CreateCollection() {
             </form>
           </div>
         </div>
-
-
       </div>
       <BackgroundCircles count={5} />
       <TwinkleStars frequency={14} />

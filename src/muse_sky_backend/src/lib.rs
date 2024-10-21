@@ -11,6 +11,7 @@ mod social_media;
 mod wallet;
 mod weather;
 
+use btc_price::BTCPrice;
 use weather::WeatherData;
 
 #[init]
@@ -102,8 +103,8 @@ async fn get_raw_data(location: String) -> Result<String, String> {
 }
 
 #[query]
-fn get_btc_price() -> btc_price::BTCPrice {
-    btc_price::get_btc_price()
+async fn get_btc_price_f() -> btc_price::BTCPrice {
+    btc_price::get_btc_price().await
 }
 
 #[query]

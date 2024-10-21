@@ -12,9 +12,12 @@ import HeroCard from '../components/HeroCard'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../constants/routes'
 import LoadingScreen from '../components/LoadingScreen'
+import { useBtcPrice } from '../store/BackendCall'
 
 function HomePage() {
   const navigate = useNavigate();
+
+  const {data, error, isLoading} = useBtcPrice();
 
   return (
     <div className='bg-transparent relative max-w-[100vw]'>

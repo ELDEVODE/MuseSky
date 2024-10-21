@@ -1,34 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
 import { AccountSettings, CloudPush, Dashbaord, Logout, MyCollections, PublicProfile, Wallet04 } from "../assets/svg";
 import { motion, AnimatePresence } from "framer-motion";
 import { defaultUser, Logo } from "../assets/images";
-import { AuthClient } from "@dfinity/auth-client";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/muse_sky_backend/muse_sky_backend.did.js";
 import { toast } from "react-toastify";
-
-// default constants for authentication
-const days = BigInt(1);
-const hours = BigInt(24);
-const nanoSeconds = BigInt(3600000000000);
-
-const defaultOptions = {
-  createOptions: {
-    idleOptions: {
-      disableIdle: true,
-    },
-  },
-  loginOptions: {
-    identityProvider:
-      process.env.DFX_NETWORK === "ic" ||
-        process.env.DFX_NETWORK === "playground"
-        ? "https://identity.ic0.app"
-        : "http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943#authorize",
-    maxTimeToLive: days * hours * nanoSeconds,
-  },
-};
+import useAuthStore from "../store/useAuthStore.js";
 
 const toastStyle = {
   background: "linear-gradient(to right, #ffa500, #ffc966)",
@@ -41,55 +20,41 @@ const toastStyle = {
 };
 
 function Navbar() {
-  const [authClient, setAuthClient] = useState(null);
+  const { authClient, isAuthenticated, login, logout, initializeAuth } = useAuthStore();
   const [identity, setIdentity] = useState(null);
   const [authActor, setAuthActor] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [principalId, setPrincipalId] = useState("");
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const [hasBackground, setHasBackground] = useState(false)
-  const prevScrollPos = useRef(0)
-  const navRef = useRef(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [hasBackground, setHasBackground] = useState(false);
+  const prevScrollPos = useRef(0);
+  const navRef = useRef(null);
   const navigate = useNavigate();
-
-  // Add this line to get the current location
   const location = useLocation();
 
-  // Add this function to check if a route is active
-  const isRouteActive = (path) => {
-    if (path === ROUTES.HOME) {
-      return location.pathname === path;
-    }
-    return location.pathname.startsWith(path);
-  };
-
+  // Initialize authentication on component mount
   useEffect(() => {
-    initAuth();
-  }, []);
-
-  async function initAuth() {
-    try {
-      const client = await AuthClient.create(defaultOptions.createOptions);
-      setAuthClient(client);
-
-      if (await client.isAuthenticated()) {
-        await handleAuthenticated(client);
+    const init = async () => {
+      await initializeAuth();
+      if (authClient && await authClient.isAuthenticated()) {
+        await handleAuthenticated();
       }
-    } catch (error) {
-      console.error("Authentication error", error);
-      toast.error("Error initializing authentication: " + error.message, {
-        style: toastStyle,
-      });
-    }
-  }
+    };
+    init();
+  }, [initializeAuth]);
 
-  async function handleAuthenticated(client) {
+  // Watch for changes in authentication status
+  useEffect(() => {
+    if (isAuthenticated && authClient) {
+      handleAuthenticated();
+    }
+  }, [isAuthenticated, authClient]);
+
+  const handleAuthenticated = async () => {
     try {
-      const identity = await client.getIdentity();
+      const identity = await authClient.getIdentity();
       setIdentity(identity);
-      setIsAuthenticated(true);
 
       const principal = identity.getPrincipal();
       const principalIdFull = principal.toString();
@@ -106,7 +71,6 @@ function Navbar() {
       });
 
       setAuthActor(newAuthActor);
-
       toast.success("Authenticated successfully", { style: toastStyle });
     } catch (error) {
       console.error("Authentication error", error);
@@ -114,35 +78,36 @@ function Navbar() {
         style: toastStyle,
       });
     }
-  }
+  };
 
-  async function handleLogin() {
+  const handleLogin = async () => {
     try {
-      await authClient.login({
-        ...defaultOptions.loginOptions,
-        onSuccess: () => {
-          handleAuthenticated(authClient);
-        },
-      });
+      await login();
     } catch (error) {
       console.error("Login error", error);
       toast.error("Error logging in: " + error.message, { style: toastStyle });
     }
-  }
+  };
 
-  async function handleLogout() {
+  const handleLogout = async () => {
     try {
-      await authClient.logout();
+      await logout();
       setIdentity(null);
       setAuthActor(null);
-      setIsAuthenticated(false);
       setPrincipalId("");
       toast.success("Logged out successfully", { style: toastStyle });
     } catch (error) {
       console.error("Logout error", error);
-      toast.error("Error logging out: " + error.message), { style: toastStyle };
+      toast.error("Error logging out: " + error.message, { style: toastStyle });
     }
-  }
+  };
+
+  const isRouteActive = (path) => {
+    if (path === ROUTES.HOME) {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
 
   function truncatePrincipalId(id) {
     if (id.length > 10) {
@@ -152,12 +117,8 @@ function Navbar() {
   }
 
   const toggleMenu = () => {
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    } else {
-      setIsMenuOpen(true);
-    }
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const handleMenuItemClick = (action) => {
     if (action === 'auth') {
@@ -168,26 +129,22 @@ function Navbar() {
       }
     }
     setIsMenuOpen(false);
-  }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollPos = window.pageYOffset
-      const navbar = navRef.current
-      const navbarHeight = navbar ? navbar.offsetHeight : 0
+      const currentScrollPos = window.pageYOffset;
+      const navbar = navRef.current;
+      const navbarHeight = navbar ? navbar.offsetHeight : 0;
 
-      // Determine if we should show/hide the navbar
-      setIsVisible(prevScrollPos.current > currentScrollPos || currentScrollPos < navbarHeight)
+      setIsVisible(prevScrollPos.current > currentScrollPos || currentScrollPos < navbarHeight);
+      setHasBackground(currentScrollPos > navbarHeight);
+      prevScrollPos.current = currentScrollPos;
+    };
 
-      // Determine if we should add background
-      setHasBackground(currentScrollPos > navbarHeight)
-
-      prevScrollPos.current = currentScrollPos
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const ProfileModal = () => (
     <motion.div
@@ -377,9 +334,9 @@ function Navbar() {
               </div>
               <div className="w-2 h-2 left-[15px] top-[1px] absolute bg-[#ffc252] rounded-full" />
             </div>
-            <div className="w-6 h-6 relative">
+            <div className="w-6 h-6 relative" onClick={() => navigate("/wallet")} style={{ cursor: 'pointer' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.25 5.85645C5.11739 5.85645 4.99021 5.90912 4.89645 6.00289C4.80268 6.09666 4.75 6.22384 4.75 6.35645C4.75 6.48905 4.80268 6.61623 4.89645 6.71C4.99022 6.80377 5.11739 6.85645 5.25 6.85645H20.25C20.7141 6.85645 21.1592 7.04082 21.4874 7.36901C21.8156 7.6972 22 8.14232 22 8.60645V19.1064C22 19.5706 21.8156 20.0157 21.4874 20.3439C21.1592 20.6721 20.7141 20.8564 20.25 20.8564H5.25C4.58696 20.8564 3.95107 20.5931 3.48223 20.1242C3.01339 19.6554 2.75 19.0195 2.75 18.3564V6.35645C2.75 5.6934 3.01339 5.05752 3.48223 4.58868C3.95107 4.11984 4.58696 3.85645 5.25 3.85645H18C18.5523 3.85645 19 4.30416 19 4.85645C19 5.40873 18.5523 5.85645 18 5.85645H5.25ZM4.75 8.80595V18.3564C4.75 18.4891 4.80268 18.6162 4.89645 18.71C4.99022 18.8038 5.11739 18.8564 5.25 18.8564H20V8.85645H5.25C5.08079 8.85645 4.91335 8.83929 4.75 8.80595Z" fill="white" />
+                <path fillRule="evenodd" clipRule="evenodd" d="M5.25 5.85645C5.11739 5.85645 4.99021 5.90912 4.89645 6.00289C4.80268 6.09666 4.75 6.22384 4.75 6.35645C4.75 6.48905 4.80268 6.61623 4.89645 6.71C4.99022 6.80377 5.11739 6.85645 5.25 6.85645H20.25C20.7141 6.85645 21.1592 7.04082 21.4874 7.36901C21.8156 7.6972 22 8.14232 22 8.60645V19.1064C22 19.5706 21.8156 20.0157 21.4874 20.3439C21.1592 20.6721 20.7141 20.8564 20.25 20.8564H5.25C4.58696 20.8564 3.95107 20.5931 3.48223 20.1242C3.01339 19.6554 2.75 19.0195 2.75 18.3564V6.35645C2.75 5.6934 3.01339 5.05752 3.48223 4.58868C3.95107 4.11984 4.58696 3.85645 5.25 3.85645H18C18.5523 3.85645 19 4.30416 19 4.85645C19 5.40873 18.5523 5.85645 18 5.85645H5.25ZM4.75 8.80595V18.3564C4.75 18.4891 4.80268 18.6162 4.89645 18.71C4.99022 18.8038 5.11739 18.8564 5.25 18.8564H20V8.85645H5.25C5.08079 8.85645 4.91335 8.83929 4.75 8.80595Z" fill="white" />
                 <path d="M16.5 15.3564C17.3284 15.3564 18 14.6849 18 13.8564C18 13.028 17.3284 12.3564 16.5 12.3564C15.6716 12.3564 15 13.028 15 13.8564C15 14.6849 15.6716 15.3564 16.5 15.3564Z" fill="white" />
               </svg>
             </div>

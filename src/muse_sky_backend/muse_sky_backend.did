@@ -89,7 +89,8 @@ service : () -> {
   end_auction : (nat) -> (Result);
   get_active_auctions : () -> (vec NFT) query;
   get_all_collections : () -> (vec Collection) query;
-  get_btc_price : () -> (BTCPrice) query;
+  get_btc_price : () -> (BTCPrice);
+  get_btc_price_f : () -> (BTCPrice) query;
   get_collection_details : (nat) -> (opt Collection) query;
   get_collections_by_owner : (principal) -> (vec Collection) query;
   get_dashboard_data : () -> (DashboardData) query;
