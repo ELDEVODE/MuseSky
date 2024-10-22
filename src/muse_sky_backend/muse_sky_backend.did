@@ -1,12 +1,15 @@
 type BTCPrice = record { usd : float64; timestamp : nat64 };
 type Collection = record {
   id : nat;
+  creator_name : text;
   owner : principal;
   name : text;
+  tags : vec text;
   description : text;
   social_media_links : opt SocialMediaLinks;
   supply : nat;
   image : blob;
+  date_of_mint : nat;
 };
 type Condition = variant { Sunny; Cloudy; Windy; Snowing; Raining };
 type Currency = variant { BTC; ETH; ICP; SOL };
@@ -85,6 +88,8 @@ service : () -> {
       opt text,
       opt text,
       opt text,
+      text,
+      vec text,
     ) -> (nat);
   end_auction : (nat) -> (Result);
   get_active_auctions : () -> (vec NFT) query;

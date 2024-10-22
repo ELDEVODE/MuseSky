@@ -3,11 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { NewsLetterSection } from '../components'
 import { FiSearch, FiPlus } from 'react-icons/fi'
 import CollectionGrid from '../components/CollectionGrid'
-import { testImages, testCollections } from '../testdata/collectionData';
 import { TwinkleStars } from '../components'
-import BackgroundCircles from '../components/BackgroundCircles';
-import Pagination from '../components/Pagination';
+import BackgroundCircles from '../components/BackgroundCircles'
+import Pagination from '../components/Pagination'
 import { useAllCollections } from '../store/BackendCall'
+import { uint8ArrayToImageUrl } from '../store/BackendCall'
+import LoadingScreen from '../components/LoadingScreen'
 
 function CollectionPage() {
   const navigate = useNavigate();
@@ -15,13 +16,21 @@ function CollectionPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const collectionsPerPage = 12
 
-  const { data: collections, refetch: refetchCollections } = useAllCollections();
+  const { data: collections = [], isLoading, error } = useAllCollections();
 
   const filteredCollections = useMemo(() => {
-    return testCollections.filter(collection =>
-      collection.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [searchQuery])
+    return collections.filter(collection =>
+      collection.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ).map(collection => ({
+      id: Number(collection.id),
+      title: collection.name,
+      description: collection.description,
+      image: uint8ArrayToImageUrl(collection.image),
+      social_links: collection.social_media_links[0] || {},
+      owner: collection.owner,
+      supply: Number(collection.supply)
+    }))
+  }, [searchQuery, collections])
 
   const totalPages = Math.ceil(filteredCollections.length / collectionsPerPage)
 
@@ -33,17 +42,10 @@ function CollectionPage() {
 
   const currentPage = getCurrentPage();
 
-  useEffect(() => {
-    console.log('Current page:', currentPage);
-    console.log('Total pages:', totalPages);
-  }, [currentPage, totalPages]);
-
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value)
     navigate('?page=1', { replace: true });
   }
-
-  const getRandomImage = () => testImages[Math.floor(Math.random() * testImages.length)];
 
   const currentCollections = useMemo(() => {
     const indexOfLastCollection = currentPage * collectionsPerPage
@@ -52,12 +54,27 @@ function CollectionPage() {
   }, [currentPage, filteredCollections, collectionsPerPage])
 
   const handlePageChange = useCallback((pageNumber) => {
-    console.log('handlePageChange called with:', pageNumber);
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       navigate(`?page=${pageNumber}`, { replace: true });
       window.scrollTo(0, 0);
     }
   }, [navigate, totalPages]);
+
+  if (isLoading) {
+    return (
+      <LoadingScreen />
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <div className="text-red-500">Error loading collections: {error.message}</div>
+      </div>
+    )
+  }
+
+
 
   return (
     <div className="w-full text-white overflow-hidden px-6">
@@ -85,12 +102,18 @@ function CollectionPage() {
         </div>
 
         {/* Collection Grid */}
-        <div className="py-12 relative">
-          <CollectionGrid collections={currentCollections.map(collection => ({
-            ...collection,
-            image: getRandomImage()
-          }))} />
-        </div>
+
+        {filteredCollections.length === 0 ? (
+          <div className='flex justify-center items-center w-full'>
+            <div className='max-w-4xl w-full'>
+              <div className="w-full relative h-[320px] bg-[#2a2a2a] rounded-[14px] border border-white flex-col justify-center items-center inline-flex overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div className="text-white text-lg font-normal font-['Onest']">No collections</div>
+              </div>
+            </div>
+          </div>
+        ) : (<div className="py-12 relative"><CollectionGrid collections={currentCollections} />  </div>
+        )}
+
 
         {/* Pagination */}
         <Pagination

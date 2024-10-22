@@ -80,7 +80,9 @@ async function createCollection(data) {
       optionalText(data.x),
       optionalText(data.instagram),
       optionalText(data.discord),
-      optionalText(data.telegram)
+      optionalText(data.telegram),
+      data.creator_name,
+      data.tags
     );
     return collectionId;
   } catch (error) {
@@ -144,4 +146,20 @@ export function uint8ArrayToBase64(uint8Array) {
   return window.btoa(binary);
 }
 
+async function fetchCollectionDetails(id) {
+  try {
+    const collectionDetails = await muse_sky_backend.get_collection_details(id);
+    console.log('Fetched collection details:', collectionDetails);
+    return collectionDetails;
+  } catch (error) {
+    console.error('Error fetching collection details:', error);
+    throw error;
+  }
+}
 
+export function useCollectionDetails(id) {
+  return useQuery({
+    queryKey: ['collectionDetails', id],
+    queryFn: () => fetchCollectionDetails(id),
+  });
+}

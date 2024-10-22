@@ -69,6 +69,8 @@ fn create_collection(
     instagram: Option<String>,
     discord: Option<String>,
     telegram: Option<String>,
+    creator_name: String,
+    tags: Vec<String>,
 ) -> Nat {
     collection::create_collection(
         name,
@@ -79,6 +81,8 @@ fn create_collection(
         instagram,
         discord,
         telegram,
+        creator_name,
+        tags,
     )
 }
 

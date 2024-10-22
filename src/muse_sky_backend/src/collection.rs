@@ -12,6 +12,9 @@ pub struct Collection {
     pub social_media_links: Option<SocialMediaLinks>,
     pub supply: Nat,
     pub owner: Principal,
+    pub creator_name: String,
+    pub tags: Vec<String>,
+    pub date_of_mint: Nat, // Use u64 for timestamp
 }
 
 thread_local! {
@@ -37,6 +40,8 @@ pub fn create_collection(
     instagram: Option<String>,
     discord: Option<String>,
     telegram: Option<String>,
+    creator_name: String,
+    tags: Vec<String>,
 ) -> Nat {
     let id = NEXT_ID.with(|id| {
         let current_id = id.borrow().clone();
@@ -57,6 +62,8 @@ pub fn create_collection(
         None
     };
 
+    let date_of_mint = ic_cdk::api::time().into();
+
     let collection = Collection {
         id: id.clone(),
         name,
@@ -65,6 +72,9 @@ pub fn create_collection(
         social_media_links,
         supply: Nat::from(0_u32),
         owner: ic_cdk::caller(),
+        creator_name,
+        tags,
+        date_of_mint,
     };
 
     COLLECTION_STORAGE.with(|storage| storage.borrow_mut().insert(id.clone(), collection));

@@ -13,6 +13,7 @@ function CreateCollection() {
   const navigate = useNavigate();
   const location = useLocation();
   const [collectionName, setCollectionName] = useState('');
+  const [creatorName, setCreatorName] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState('');
@@ -64,18 +65,26 @@ function CreateCollection() {
     }
   }, [coverImage]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createCollection({
-      name: collectionName,
-      image: coverImage,
-      description,
-      website: socialLinks.website,
-      x: socialLinks.x,
-      instagram: socialLinks.instagram,
-      discord: socialLinks.discord,
-      telegram: socialLinks.telegram,
-    });
+    console.log(tags)
+    try {
+
+      createCollection({
+        name: collectionName,
+        image: coverImage,  // Now properly formatted as an array with square brackets
+        description,
+        website: socialLinks.website,
+        x: socialLinks.x,
+        instagram: socialLinks.instagram,
+        discord: socialLinks.discord,
+        telegram: socialLinks.telegram,
+        creator_name: creatorName, // Add the creator name if available
+        tags: tags // Convert tags array to a comma-separated string
+      });
+    } catch (error) {
+      console.error('Error creating collection:', error);
+    }
   };
 
   const handleImageUpload = (file) => {
@@ -187,7 +196,7 @@ function CreateCollection() {
     }
   };
 
-  const imageUrl = collections?.length > 0 ? uint8ArrayToImageUrl(collections[3]?.image) : null;
+  // const imageUrl = collections?.length > 0 ? uint8ArrayToImageUrl(collections[3]?.image) : null;
 
 
 
@@ -219,6 +228,20 @@ function CreateCollection() {
                   onChange={(e) => setCollectionName(e.target.value)}
                   className="w-full h-12 px-3 bg-white/20 rounded-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
                   placeholder="Enter your Collection name"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="collectionName" className="block text-sm text-[#E6E6EB] font-medium font-['Onest'] mb-1">
+                  Creator's Name
+                </label>
+                <input
+                  type="text"
+                  id="collectionName"
+                  value={creatorName}
+                  onChange={(e) => setCreatorName(e.target.value)}
+                  className="w-full h-12 px-3 bg-white/20 rounded-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
+                  placeholder="Enter your name"
                   required
                 />
               </div>

@@ -1,7 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { uint8ArrayToImageUrl } from '../store/BackendCall';
+
+// const imageUrl = collections?.length > 0 ? uint8ArrayToImageUrl(collections[3]?.image) : null;
+
 
 const CollectionCard = ({ id, image, title, creator, price, likes, destiny }) => (
+
   <Link to={destiny ? `/randomId/collections/${id}` : `/collection/${id}`} className="block w-full max-w-[260px]">
     <div className="w-full relative h-[320px] bg-[#2a2a2a] rounded-[14px] border border-white flex-col justify-start items-center inline-flex overflow-hidden transition-transform duration-300 hover:scale-105">
       <div className="self-stretch h-full rounded-tl-[14px] rounded-tr-[14px]">
@@ -12,9 +17,9 @@ const CollectionCard = ({ id, image, title, creator, price, likes, destiny }) =>
           <div className="self-stretch text-white text-base font-semibold font-['Bricolage Grotesque'] capitalize leading-tight truncate">{title}</div>
           <div className="self-stretch justify-start items-center gap-2 inline-flex">
             <div className="w-5 h-5 rounded-full overflow-hidden">
-              <img className="w-full h-full object-cover" src={creator.avatar} alt={creator.name} />
+              <img className="w-full h-full object-cover" src={image} /* alt={creator.name} */ />
             </div>
-            <div className="grow shrink basis-0 text-white text-sm font-normal font-['Onest'] leading-tight truncate">{creator.name}</div>
+            <div className="grow shrink basis-0 text-white text-sm font-normal font-['Onest'] leading-tight truncate">{/*{creator.name} */} Place Holder</div>
           </div>
         </div>
         <div className="self-stretch justify-between items-start inline-flex flex-col">
