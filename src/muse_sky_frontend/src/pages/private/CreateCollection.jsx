@@ -11,43 +11,34 @@ import { useCreateCollection, useAllCollections, uint8ArrayToImageUrl } from '..
 
 function CreateCollection() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [collectionName, setCollectionName] = useState('');
-  const [creatorName, setCreatorName] = useState('');
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState([]);
-  const [currentTag, setCurrentTag] = useState('');
-  const [coverImage, setCoverImage] = useState(null);
+  const [formData, setFormData] = useState({
+    collectionName: '',
+    creatorName: '',
+    description: '',
+    tags: [],
+    currentTag: '',
+    coverImage: null,
+    // currency: 'ICP',
+    // basePrice: '',
+    socialLinks: {
+      website: '',
+      instagram: '',
+      discord: '',
+      telegram: '',
+      x: ''
+    }
+  });
+
   const [wordCount, setWordCount] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
-  const quillRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const quillRef = useRef(null);
   const fileInputRef = useRef(null);
   const dragCounter = useRef(0);
   const dropZoneRef = useRef(null);
-  const [socialLinks, setSocialLinks] = useState({
-    website: '',
-    instagram: '',
-    discord: '',
-    telegram: '',
-    x: ''
-  });
 
-  useEffect(() => {
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-      editor.on('selection-change', (range) => {
-        if (range) {
-          setIsFocused(true);
-        } else {
-          setIsFocused(false);
-        }
-      });
-    }
-  }, []);
-
-  const { mutate: createCollection, isLoading, isError, isSuccess, data } = useCreateCollection();
-  const { data: collections, refetch: refetchCollections } = useAllCollections();
+  const { mutate: createCollection, isSuccess } = useCreateCollection();
+  const { refetch: refetchCollections } = useAllCollections();
 
   useEffect(() => {
     if (isSuccess) {
@@ -55,60 +46,65 @@ function CreateCollection() {
     }
   }, [isSuccess, refetchCollections]);
 
-
-  useEffect(() => {
-    // Example of setting focus state
-    if (coverImage) {
-      setIsFocused(true);
-    } else {
-      setIsFocused(false);
-    }
-  }, [coverImage]);
+  const currencies = [
+    { value: 'BTC', label: 'Bitcoin (BTC)' },
+    { value: 'ETH', label: 'Ethereum (ETH)' },
+    { value: 'SOL', label: 'Solana (SOL)' },
+    { value: 'ICP', label: 'Internet Computer (ICP)' }
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(tags)
     try {
 
+
       createCollection({
-        name: collectionName,
-        image: coverImage,  // Now properly formatted as an array with square brackets
-        description,
-        website: socialLinks.website,
-        x: socialLinks.x,
-        instagram: socialLinks.instagram,
-        discord: socialLinks.discord,
-        telegram: socialLinks.telegram,
-        creator_name: creatorName, // Add the creator name if available
-        tags: tags // Convert tags array to a comma-separated string
+        name: formData.collectionName,
+        image: formData.coverImage,
+        description: formData.description,
+        website: formData.socialLinks.website || null,
+        x: formData.socialLinks.x || null,
+        instagram: formData.socialLinks.instagram || null,
+        discord: formData.socialLinks.discord || null,
+        telegram: formData.socialLinks.telegram || null,
+        creator_name: formData.creatorName,
+        tags: formData.tags,
       });
     } catch (error) {
       console.error('Error creating collection:', error);
     }
   };
 
-  const handleImageUpload = (file) => {
+  const handleImageUpload = useCallback((file) => {
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setCoverImage(e.target.result);
+        setFormData(prev => ({
+          ...prev,
+          coverImage: e.target.result
+        }));
       };
       reader.readAsDataURL(file);
     }
-  };
+  }, []);
 
   const handleAddTag = (e) => {
     e.preventDefault();
-    if (currentTag.trim() && !tags.includes(currentTag.trim())) {
-      setTags([...tags, currentTag.trim()]);
-      setCurrentTag('');
+    if (formData.currentTag.trim() && !formData.tags.includes(formData.currentTag.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, prev.currentTag.trim()],
+        currentTag: ''
+      }));
     }
   };
 
   const handleRemoveTag = (tagToRemove) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }));
   };
-
   const quillModules = {
     toolbar: [
       ['bold', 'italic', 'underline'],
@@ -127,7 +123,10 @@ function CreateCollection() {
   const handleDescriptionChange = useCallback((value) => {
     const words = value.replace(/<[^>]*>/g, '').trim().split(/\s+/);
     if (words.length <= 500 || words[0] === '') {
-      setDescription(value);
+      setFormData(prev => ({
+        ...prev,
+        description: value
+      }));
       setWordCount(words[0] === '' ? 0 : words.length);
     }
   }, []);
@@ -196,10 +195,6 @@ function CreateCollection() {
     }
   };
 
-  // const imageUrl = collections?.length > 0 ? uint8ArrayToImageUrl(collections[3]?.image) : null;
-
-
-
   return (
     <div className="relative w-full text-white overflow-hidden px-6">
       <div className="relative mb-10">
@@ -208,8 +203,6 @@ function CreateCollection() {
             <h1 className="text-4xl sm:text-5xl font-bold font-['Bricolage Grotesque'] capitalize leading-tight mb-1">
               CREATE NEW COLLECTION
             </h1>
-            {/* {console.log('collections', imageUrl)}
-            <img src={imageUrl} alt="Collection" className="w-full h-full" /> */}
             <p className="text-sm font-normal font-['Onest'] leading-relaxed">
               Create your own unique NFT collection and share it with the world.
             </p>
@@ -224,22 +217,22 @@ function CreateCollection() {
                 <input
                   type="text"
                   id="collectionName"
-                  value={collectionName}
-                  onChange={(e) => setCollectionName(e.target.value)}
+                  value={formData.collectionName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, collectionName: e.target.value }))}
                   className="w-full h-12 px-3 bg-white/20 rounded-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
                   placeholder="Enter your Collection name"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="collectionName" className="block text-sm text-[#E6E6EB] font-medium font-['Onest'] mb-1">
+                <label htmlFor="creatorName" className="block text-sm text-[#E6E6EB] font-medium font-['Onest'] mb-1">
                   Creator's Name
                 </label>
                 <input
                   type="text"
-                  id="collectionName"
-                  value={creatorName}
-                  onChange={(e) => setCreatorName(e.target.value)}
+                  id="creatorName"
+                  value={formData.creatorName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, creatorName: e.target.value }))}
                   className="w-full h-12 px-3 bg-white/20 rounded-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
                   placeholder="Enter your name"
                   required
@@ -251,7 +244,7 @@ function CreateCollection() {
                   ref={quillRef}
                   placeholder='Add a description'
                   theme="snow"
-                  value={description}
+                  value={formData.description}
                   onChange={handleDescriptionChange}
                   modules={quillModules}
                   formats={quillFormats}
@@ -274,7 +267,7 @@ function CreateCollection() {
                   Tags
                 </label>
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {tags.map((tag, index) => (
+                  {formData.tags.map((tag, index) => (
                     <span key={index} className="bg-white/20 text-white px-2 py-1 rounded-full text-sm">
                       {tag}
                       <button
@@ -291,8 +284,8 @@ function CreateCollection() {
                   <input
                     type="text"
                     id="tags"
-                    value={currentTag}
-                    onChange={(e) => setCurrentTag(e.target.value)}
+                    value={formData.currentTag}
+                    onChange={(e) => setFormData(prev => ({ ...prev, currentTag: e.target.value }))}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddTag(e)}
                     className="flex-grow h-12 px-3 bg-white/20 rounded-l-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
                     placeholder="e.g : art, painting, etc"
@@ -326,8 +319,8 @@ function CreateCollection() {
                     className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer ${isDragging ? 'border-[#FFC252]/40' : 'border-[#FFC252]/20 hover:border-[#FFC252]/30'
                       } transition-all duration-300`}
                   >
-                    {coverImage ? (
-                      <img src={coverImage} alt="Cover" className="w-full h-full object-cover rounded-lg" />
+                    {formData.coverImage ? (
+                      <img src={formData.coverImage} alt="Cover" className="w-full h-full object-cover rounded-lg" />
                     ) : (
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <FiUpload className="w-10 h-12 mb-3 text-white" />
@@ -349,7 +342,44 @@ function CreateCollection() {
                 </div>
               </div>
 
-              <SocialMediaLinks setSocialLinks={setSocialLinks} />
+              {/* <div className="border-b border-[#CECCD6]/30 pb-10 space-y-6">
+                <div>
+                  <label className="block text-sm text-[#E6E6EB] font-medium font-['Onest'] mb-1">
+                    Currency
+                  </label>
+                  <select
+                    value={formData.currency}
+                    onChange={(e) => setFormData(prev => ({ ...prev, currency: e.target.value }))}
+                    className="w-full h-12 px-3 bg-white/20 rounded-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
+                  >
+                    {currencies.map(({ value, label }) => (
+                      <option key={value} value={value} className="bg-[#1F1F1F] hover:bg-[#2A2A2A]">
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-[#E6E6EB] font-medium font-['Onest'] mb-1">
+                    Base Price
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={formData.basePrice}
+                      onChange={(e) => setFormData(prev => ({ ...prev, basePrice: e.target.value }))}
+                      step="0.00000001"
+                      min="0"
+                      className="w-full h-12 px-3 bg-white/20 rounded-lg border border-[#FFC252]/20 text-white placeholder-[#858584] text-sm font-normal font-['Onest'] leading-snug focus:outline-none"
+                      placeholder={`Enter base price in ${formData.currency}`}
+                      required
+                    />
+                  </div>
+                </div>
+              </div> */}
+
+              <SocialMediaLinks setSocialLinks={(links) => setFormData(prev => ({ ...prev, socialLinks: links }))} />
 
               <div className="pt-4 flex justify-between items-center">
                 <button

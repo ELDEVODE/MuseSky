@@ -4,13 +4,15 @@ import { TwinkleStars } from '../components';
 import BackgroundCircles from '../components/BackgroundCircles';
 import { FiShare2, FiX, FiHeart } from 'react-icons/fi';
 import NFTCard from '../components/NFTCard';
-import { testNFTs, weatherConditions, weatherIcons, collection } from '../testdata/nftData';
+import { testNFTs, weatherConditions, weatherIcons } from '../testdata/nftData';
 import { ROUTES } from '../constants/routes';
 import Pagination from '../components/Pagination';
+import { uint8ArrayToImageUrl, useCollectionDetails, convertTimestampToNormalTime } from '../store/BackendCall';
 
 function CollectionDetailPage() {
-  const { id } = useParams();
+  const { collectionId } = useParams();
   const navigate = useNavigate();
+  const { data: collection, isLoading, error } = useCollectionDetails(collectionId);
   const [isLiked, setIsLiked] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [previewIndex, setPreviewIndex] = useState(0);
@@ -85,18 +87,27 @@ function CollectionDetailPage() {
     setCurrentPage(pageNumber);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading collection details</div>;
+  }
+
   return (
     <div className="relative w-full text-white py-2 px-6 md:px-6 lg:px-8 pb-32">
+      {console.log('collection:', collectionId, collection[0])}
       <div className='max-w-6xl mx-auto mt-16 md:mt-32'>
         <div className="mt-8 flex flex-col md:flex-row justify-between items-start gap-6">
           <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-2">{collection.title}</h1>
-            <p className="text-base md:text-lg text-gray-400 mb-4">Minted on {collection.mintDate}</p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-2">{collection[0].name}</h1>
+            <p className="text-base md:text-lg text-gray-400 mb-4">Minted on {convertTimestampToNormalTime(collection[0].date_of_mint)}</p>
             <div className="mb-4">
               <h2 className="text-base md:text-lg font-bold text-gray-400 mb-1">Created By</h2>
               <div className="flex items-center gap-2">
-                <img className="w-5 h-5 rounded-full" src={collection.creator.avatar} alt={collection.creator.name} />
-                <span className="text-base md:text-lg font-semibold">{collection.creator.name}</span>
+                <img className="w-5 h-5 rounded-full" src={uint8ArrayToImageUrl(collection[0].image)} /* alt={collection.creator.name} */ />
+                <span className="text-base md:text-lg font-semibold">{collection[0].creator_name}</span>
               </div>
             </div>
           </div>
@@ -114,8 +125,8 @@ function CollectionDetailPage() {
               </div>
             </div>
             <div className="justify-center items-end gap-2 inline-flex">
-              <div className="text-center text-white text-3xl font-semibold font-['Bricolage Grotesque'] leading-[38px]">{collection.basePrice}</div>
-              <div className="text-center text-[#e6e6eb] text-sm font-normal font-['Onest'] leading-relaxed">({collection.priceUSD})</div>
+              <div className="text-center text-white text-3xl font-semibold font-['Bricolage Grotesque'] leading-[38px]">0.024 ckBTC</div>
+              <div className="text-center text-[#e6e6eb] text-sm font-normal font-['Onest'] leading-relaxed">($3,618.36)</div>
             </div>
           </div>
         </div>
@@ -123,12 +134,15 @@ function CollectionDetailPage() {
         <div className="my-8 flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <h2 className="text-lg md:text-xl text-[#858584] font-bold capitalize">Description</h2>
-            <p className="text-sm md:text-base leading-relaxed">{collection.description}</p>
+            <p
+              className="text-sm md:text-base leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: collection[0].description }}
+            ></p>
           </div>
           <div className="flex flex-col gap-3">
             <h2 className="text-lg md:text-xl text-[#858584] font-bold capitalize">Tags</h2>
             <div className="flex flex-wrap gap-2 md:gap-3">
-              {collection.tags.map((tag, index) => (
+              {collection[0].tags.map((tag, index) => (
                 <span key={index} className="px-3 md:px-4 py-1 bg-[#3b3b3b] rounded-full text-xs md:text-sm font-semibold uppercase">
                   {tag}
                 </span>
@@ -138,7 +152,7 @@ function CollectionDetailPage() {
         </div>
 
         <div className="h-auto md:h-[80px] flex-col justify-start items-start md:items-start gap-3 flex">
-          <div className="text-right text-white text-sm font-medium font-['Onest'] leading-relaxed">Views: {collection.views}</div>
+          <div className="text-right text-white text-sm font-medium font-['Onest'] leading-relaxed">Views: 20K</div>
           <div className="flex items-center gap-2">
             <button
               className="h-10 px-3 bg-black rounded-lg border border-[#ffc252] flex items-center gap-1.5 hover:bg-[#ffc252]/10 transition-colors"
@@ -234,7 +248,7 @@ function CollectionDetailPage() {
       <BackgroundCircles count={5} />
       <TwinkleStars frequency={25} />
     </div>
-  )
+  );
 }
 
 export default CollectionDetailPage;

@@ -1,4 +1,5 @@
 use crate::social_media::SocialMediaLinks;
+use crate::wallet::Currency; // Import the Currency enum from wallet.rs
 use candid::{CandidType, Deserialize, Nat, Principal};
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -26,10 +27,6 @@ pub fn init() {
     COLLECTION_STORAGE.with(|storage| storage.borrow_mut().clear());
     NEXT_ID.with(|id| *id.borrow_mut() = Nat::from(1_u32))
 }
-
-// pub fn get_collection(id: Nat) -> Option<Collection> {
-//     COLLECTION_STORAGE.with(|storage| storage.borrow_mut().get(&id).cloned())
-// }
 
 pub fn create_collection(
     name: String,

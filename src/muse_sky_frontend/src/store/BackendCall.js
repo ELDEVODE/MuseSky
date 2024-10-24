@@ -82,7 +82,7 @@ async function createCollection(data) {
       optionalText(data.discord),
       optionalText(data.telegram),
       data.creator_name,
-      data.tags
+      data.tags,
     );
     return collectionId;
   } catch (error) {
@@ -90,6 +90,7 @@ async function createCollection(data) {
     throw error;
   }
 }
+
 
 export function useCreateCollection() {
   return useMutation({
@@ -148,7 +149,9 @@ export function uint8ArrayToBase64(uint8Array) {
 
 async function fetchCollectionDetails(id) {
   try {
-    const collectionDetails = await muse_sky_backend.get_collection_details(id);
+    const bigIntId = BigInt(id); // Convert id to BigInt
+    console.log('Fetching collection details for id:', bigIntId); // Add logging
+    const collectionDetails = await muse_sky_backend.get_collection_details(bigIntId);
     console.log('Fetched collection details:', collectionDetails);
     return collectionDetails;
   } catch (error) {
@@ -162,4 +165,19 @@ export function useCollectionDetails(id) {
     queryKey: ['collectionDetails', id],
     queryFn: () => fetchCollectionDetails(id),
   });
+}
+
+// Utility function to convert a timestamp string with 'n' suffix to BigInt
+function convertTimestampToBigInt(timestamp) {
+  if (typeof timestamp === 'string' && timestamp.endsWith('n')) {
+    return BigInt(timestamp.slice(0, -1));
+  }
+  return BigInt(timestamp);
+}
+
+// Utility function to convert a timestamp to normal time
+export function convertTimestampToNormalTime(timestamp) {
+  const timestampNumber = Number(convertTimestampToBigInt(timestamp) / BigInt(1_000_000)); // Convert nanoseconds to milliseconds
+  const date = new Date(timestampNumber);
+  return date.toLocaleString();
 }
