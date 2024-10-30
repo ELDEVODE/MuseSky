@@ -1,18 +1,15 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { blogPosts } from "../constants/testData";
 import { CoolButton } from "../components";
 import BlogCarousel from "../components/BlogCarousel";
 import { ROUTES } from "../constants/routes";
-import { useGetPost, useListPosts } from "../store/BackendCallBlog";
-import { convertTimestampToNormalTime } from "../store/BackendCall";
 
-const BlogPost = ({ post: propPost, isPreview = false }) => {
+const BlogPost2 = ({ post: propPost, isPreview = false }) => {
   const navigate = useNavigate();
   const { postId } = useParams();
-  const { data: posts, isLoading, isError, refetch } = useGetPost(postId);
-  const { data: otherPosts } = useListPosts();
-
-  const post = propPost || (posts && posts[0]);
+  const post =
+    propPost || blogPosts.find((post) => post.id === parseInt(postId));
 
   const shareUrl = isPreview ? "" : window.location.href;
   const shareText = post ? post.title : "Check out this blog post!";
@@ -41,61 +38,9 @@ const BlogPost = ({ post: propPost, isPreview = false }) => {
     window.open(url, "_blank");
   };
 
-  React.useEffect(() => {
-    refetch();
-  }, [postId]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh] text-white">
-        Loading...
-      </div>
-    );
+  if (!post) {
+    return <div>Loading...</div>;
   }
-
-  if (isError) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-[50vh] text-white">
-        <p className="text-xl mb-4">Error fetching post</p>
-        <CoolButton onClick={() => navigate(ROUTES.BLOG)}>
-          Return to Blog
-        </CoolButton>
-      </div>
-    );
-  }
-
-  // Check if post exists
-  if (!post && !isPreview) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-[50vh] text-white">
-        <p className="text-xl mb-4">
-          This post doesn't exist or has been removed
-        </p>
-        <CoolButton onClick={() => navigate(ROUTES.BLOG)}>
-          Return to Blog
-        </CoolButton>
-      </div>
-    );
-  }
-
-  // Safety check for preview mode without post data
-  if (isPreview && !post) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh] text-white">
-        <p>Preview data not available</p>
-      </div>
-    );
-  }
-
-  // Safely check post properties before using them
-  const postTitle = post?.title || "Untitled Post";
-  const postDate = post?.date ? convertTimestampToNormalTime(post.date) : "";
-  const postImage = post?.image_link || "";
-  const postContent = post?.content || "";
-
-  // Filter related posts from the posts array, excluding the current post
-  const relatedPosts =
-    otherPosts && post?.id ? otherPosts.filter((p) => p.id !== post.id) : [];
 
   return (
     <div className="max-w-6xl mx-auto bg-black text-white">
@@ -103,28 +48,35 @@ const BlogPost = ({ post: propPost, isPreview = false }) => {
         <div className="flex-col justify-start items-center gap-[40px] flex">
           <div className="self-stretch flex-col justify-start items-start gap-3 flex">
             <h1 className="self-stretch text-center text-white text-3xl sm:text-4xl md:text-5xl font-extrabold font-['Bricolage Grotesque'] uppercase leading-tight sm:leading-[54px]">
-              {postTitle}
+              {post.title}
             </h1>
-            {postDate && (
-              <p className="self-stretch text-center text-[#dfdfd1] text-sm font-normal font-['Onest'] leading-normal">
-                {postDate}
-              </p>
-            )}
+            <p className="self-stretch text-center text-[#dfdfd1] text-sm font-normal font-['Onest'] leading-normal">
+              {new Date(post.date).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </p>
           </div>
         </div>
-        {postImage && (
-          <img
-            className="w-full h-auto sm:max-w-[960px] sm:max-h-[460px] relative rounded-lg object-cover"
-            src={postImage}
-            alt={postTitle}
-          />
+        {post.excerpt && (
+          <div className="w-full sm:max-w-[960px] mb-6">
+            <p className="text-lg text-[#dfdfd1] italic border-l-4 border-[#ffa500] pl-4">
+              {post.excerpt}
+            </p>
+          </div>
         )}
+        <img
+          className="w-full h-auto sm:max-w-[960px] sm:max-h-[460px] relative rounded-lg object-cover"
+          src={post.imageUrl}
+          alt={post.title}
+        />
         <div className="w-full sm:max-w-[960px] h-[0px] border-b border-white/50"></div>
       </div>
 
       <div className="max-w-[960px] mx-auto px-4 py-8">
         <div className="prose prose-invert max-w-none custom-blog-content">
-          <div dangerouslySetInnerHTML={{ __html: postContent }} />
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
 
         {!isPreview && (
@@ -182,7 +134,7 @@ const BlogPost = ({ post: propPost, isPreview = false }) => {
         )}
       </div>
 
-      {relatedPosts.length > 0 && (
+      {!isPreview && (
         <div className="max-w-[100vw] px-6 py-[75px] md:py-[100px] relative overflow-hidden">
           <div className="max-w-6xl mx-auto">
             <div className="mb-[50px] flex flex-col md:flex-row justify-between items-start w-full">
@@ -200,7 +152,7 @@ const BlogPost = ({ post: propPost, isPreview = false }) => {
                 </CoolButton>
               </div>
             </div>
-            <BlogCarousel posts={relatedPosts} />
+            <BlogCarousel posts={blogPosts.filter((p) => p.id !== post.id)} />
             <div className="flex justify-center md:justify-end mt-5 w-full flex md:hidden relative">
               <CoolButton onClick={() => navigate(ROUTES.BLOG)}>
                 View All Posts
@@ -304,4 +256,4 @@ const BlogPost = ({ post: propPost, isPreview = false }) => {
   );
 };
 
-export default BlogPost;
+export default BlogPost2;

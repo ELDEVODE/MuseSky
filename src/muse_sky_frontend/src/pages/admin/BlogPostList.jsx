@@ -11,6 +11,7 @@ import {
   HiChevronRight,
 } from "react-icons/hi";
 import { useListPosts } from "../../store/BackendCallBlog";
+import { convertTimestampToNormalTime } from "../../store/BackendCall";
 
 const POSTS_PER_PAGE = 10;
 
@@ -26,7 +27,7 @@ const BlogPostList = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: posts } = useListPosts();
+  const { data: posts, refetch } = useListPosts();
 
   useEffect(() => {
     const filtered = blogPosts.filter((post) => {
@@ -44,6 +45,11 @@ const BlogPostList = () => {
     setFilteredPosts(filtered);
     setCurrentPage(1); // Reset to first page when filters change
   }, [searchTerm, filters]);
+
+  //refetch with useEffect
+  useEffect(() => {
+    refetch();
+  }, [posts]);
 
   const filterByDate = (postDate, filterDate) => {
     const date = new Date(postDate);
@@ -143,53 +149,60 @@ const BlogPostList = () => {
               </div>
             </div>
           </div>
+          {console.log(posts)}
 
-          <ul className="divide-y divide-gray-200">
-            {currentPosts.map((post) => (
-              <li
-                key={post.id}
-                className="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150 ease-in-out"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0 pr-4">
-                    <p className="text-lg font-semibold text-gray-900 truncate">
-                      {post.title}
-                    </p>
-                    <p className="mt-1 flex items-center text-sm text-gray-500">
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
-                      <span className="mx-2">&middot;</span>
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-4 font-medium rounded-full ${
-                          post.status === "published"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
+          {posts?.length === 0 ? (
+            <div className="px-4 py-5 sm:p-6">
+              <p className="text-center text-gray-500">No posts available.</p>
+            </div>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {posts?.map((post) => (
+                <li
+                  key={post.id}
+                  className="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150 ease-in-out"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0 pr-4">
+                      <p className="text-lg font-semibold text-gray-900 truncate">
+                        {post.title}
+                      </p>
+                      <p className="mt-1 flex items-center text-sm text-gray-500">
+                        <span>{convertTimestampToNormalTime(post.date)}</span>
+                        <span className="mx-2">&middot;</span>
+                        <span
+                          className={`px-2 py-1 inline-flex text-xs leading-4 font-medium rounded-full ${
+                            post.status === "published"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {post.status}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0 flex items-center space-x-2">
+                      <button className="p-2 text-indigo-600 hover:text-indigo-900 transition-colors duration-200">
+                        <HiOutlineEye className="h-5 w-5" />
+                      </button>
+                      <Link
+                        to={ROUTES.ADMIN_EDIT_POST.replace(":postId", post.id)}
+                        className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                       >
-                        {post.status}
-                      </span>
-                    </p>
+                        <HiOutlinePencil className="h-5 w-5" />
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteClick(post)}
+                        className="p-2 text-gray-400 hover:text-red-600 transition-colors duration-200"
+                      >
+                        <HiOutlineTrash className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex-shrink-0 flex items-center space-x-2">
-                    <button className="p-2 text-indigo-600 hover:text-indigo-900 transition-colors duration-200">
-                      <HiOutlineEye className="h-5 w-5" />
-                    </button>
-                    <Link
-                      to={ROUTES.ADMIN_EDIT_POST.replace(":postId", post.id)}
-                      className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                    >
-                      <HiOutlinePencil className="h-5 w-5" />
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteClick(post)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors duration-200"
-                    >
-                      <HiOutlineTrash className="h-5 w-5" />
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
 
           {/* Pagination */}
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">

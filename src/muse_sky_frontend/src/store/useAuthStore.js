@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from "zustand";
 import { AuthClient } from "@dfinity/auth-client";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/muse_sky_backend/muse_sky_backend.did.js";

@@ -1,16 +1,18 @@
-type Post = record { id : text; title : text; content : text; author : text };
-type PostChunk = record {
-  chunk_index : nat32;
-  total_chunks : nat32;
-  posts : vec Post;
+type Post = record {
+  id : text;
+  title : text;
+  content : text;
+  date : nat;
+  image_link : text;
+  author : text;
+  excerpt : text;
 };
 type Result = variant { Ok : text; Err : text };
 type Result_1 = variant { Ok; Err : text };
 service : {
-  create_post : (text, text, text, text, text) -> (Result);
+  create_post : (text, text, text, text, text, text) -> (Result);
   delete_post : (text, text, text) -> (Result_1);
   get_post : (text) -> (opt Post) query;
-  get_posts_chunk : (nat32, nat32) -> (PostChunk) query;
   list_posts : () -> (vec Post);
-  update_post : (text, text, text, text, text, text) -> (Result_1);
+  update_post : (text, text, text, text, text, text, text) -> (Result_1);
 }

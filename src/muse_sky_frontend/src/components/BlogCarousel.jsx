@@ -1,23 +1,26 @@
-import React, { useState, useTransition } from 'react';
-import BlogCard from './BlogCard';
+import React, { useState, useTransition } from "react";
+import BlogCard from "./BlogCard";
+import { convertTimestampToNormalTime } from "../store/BackendCall";
 
 const BlogCarousel = ({ posts }) => {
   const maxPosts = posts.slice(0, 12); // Limit to 12 posts
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPending, startTransition] = useTransition();
-  const [direction, setDirection] = useState('next');
+  const [direction, setDirection] = useState("next");
 
   const nextSlide = () => {
-    setDirection('next');
+    setDirection("next");
     startTransition(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % maxPosts.length);
     });
   };
 
   const prevSlide = () => {
-    setDirection('prev');
+    setDirection("prev");
     startTransition(() => {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + maxPosts.length) % maxPosts.length);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + maxPosts.length) % maxPosts.length
+      );
     });
   };
 
@@ -36,19 +39,21 @@ const BlogCarousel = ({ posts }) => {
         {getVisiblePosts().map((post, index) => (
           <div
             key={index}
-            className={`w-full md:w-1/3 transition-all duration-300 ${isPending
-                ? direction === 'next'
-                  ? '-translate-x-full opacity-0'
-                  : 'translate-x-full opacity-0'
-                : 'translate-x-0 opacity-100'
-              }`}
+            className={`w-full md:w-1/3 transition-all duration-300 ${
+              isPending
+                ? direction === "next"
+                  ? "-translate-x-full opacity-0"
+                  : "translate-x-full opacity-0"
+                : "translate-x-0 opacity-100"
+            }`}
           >
+            {console.log(posts)}
             <BlogCard
               id={post.id}
               title={post.title}
-              content={post.content}
-              imageUrl={post.imageUrl}
-              date={post.date}
+              content={post.excerpt}
+              imageUrl={post.image_link}
+              date={convertTimestampToNormalTime(post.date)}
             />
           </div>
         ))}
